@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://uniqkode.github.io/b2b-product-studio/rill/sitemap.xml

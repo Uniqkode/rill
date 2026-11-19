@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d34">
+  <title>Security and data controls | Rill</title>
+  <meta name="description" content="Review Rill’s browser-local sample controls and the planned production identity, tenant storage, monitoring and audit design.">
+  <meta property="og:title" content="Security and data controls | Rill">
+  <meta property="og:description" content="Review Rill’s browser-local sample controls and the planned production identity, tenant storage, monitoring and audit design.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://uniqkode.github.io/b2b-product-studio/rill/security/">
+  <link rel="canonical" href="https://uniqkode.github.io/b2b-product-studio/rill/security/">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <link rel="stylesheet" href="../assets/rill.css">
+</head>
+<body class="rill-site rill-modern" data-brand="rill" data-base="../" data-page="security">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="rill-nav">
+  <div class="rill-shell rill-nav-inner">
+    <a class="rill-wordmark" href="../" aria-label="Rill home"><span class="rill-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M10 39V11h13c13 0 15 17 2 19l13 9M18 39V18h6c4 0 4 5 0 5h-6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M34 6c-6 7-6 11 0 11s6-4 0-11Z" fill="currentColor"/></svg></span><strong>Rill</strong></a>
+    <button type="button" class="menu-toggle" aria-label="Open menu" aria-controls="primary-navigation" aria-expanded="false"><span></span><span></span></button>
+    <nav class="rill-nav-links" id="primary-navigation" aria-label="Main navigation">
+      <a href="../solution/">Product</a>
+      <a href="../Technology/">Technology</a>
+      <a href="../security/" aria-current="page">Security</a>
+      <a href="../pricing/">Pricing</a>
+      <a href="../about/">Company</a>
+      <a href="../login/" class="rill-nav-login">Log in</a>
+      <a class="rill-button rill-button--small" href="../contact/">Book a demo</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<section class="rill-route-hero">
+  <div class="rill-shell">
+    <div class="rill-route-intro">
+      <span class="rill-eyebrow">Security</span>
+      <h1>Keep field data and decisions accountable.</h1>
+      <p>See how the sample workspace handles data today and what controls are required for organizational deployment.</p>
+      <div class="rill-actions"><a class="rill-button" href="../data-policy/">Read the data policy</a><a class="rill-button rill-button--outline" href="../Technology/">View infrastructure</a></div>
+    </div>
+  </div>
+</section><section class="rill-section">
+  <div class="rill-shell">
+<header class="rill-head">
+  <span class="rill-eyebrow">Sample workspace</span>
+  <h2>Controls in the current workflow.</h2>
+</header><div class="rill-grid-3">
+  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3m-4 4v2"/></svg></span><h3>Browser-local records</h3><p>Sample edits, review reports and activity remain in this browser. Reset removes workspace changes and the sample session.</p></article>
+  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Explicit data submission</h3><p>Prepared cases run locally. Connected analysis sends only entered inputs to the service address specified by the operator.</p></article>
+  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v16h14V5h-4M8 10h8m-8 4h5"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span><h3>Human review</h3><p>Reviewers can trace findings to a source, retain a dated report and record watering outcomes. Pump operation stays with the irrigation team.</p></article>
+</div>
+  </div>
+</section><section class="rill-section rill-section--muted">
+  <div class="rill-shell">
+<header class="rill-head">
+  <span class="rill-eyebrow">Organizational deployment</span>
+  <h2>Planned controls for production data.</h2>
+</header><div class="rill-table-wrap" tabindex="0" role="region" aria-label="Planned production security controls">
+  <table class="rill-table">
+    <thead><tr><th scope="col">Control</th><th scope="col">Implementation design</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Identity and permissions</th><td>Microsoft Entra ID and role-based authorization for operators, reviewers and administrators. Use managed identities for service-to-service access.</td></tr>
+      <tr><th scope="row">Storage isolation</th><td>Tenant-scoped Blob containers, encryption settings and retention policies. Validate separation and access requirements before data ingestion.</td></tr>
+      <tr><th scope="row">Keys and network</th><td>Azure Key Vault for secrets and certificates, TLS 1.2+ and Azure Private Link for supported services.</td></tr>
+      <tr><th scope="row">Operational monitoring</th><td>Azure Monitor and Application Insights to measure service health and errors. Defender for Cloud for resource security posture.</td></tr>
+      <tr><th scope="row">Audit retention</th><td>Route protected audit records to immutable storage under a defined retention period.</td></tr>
+    </tbody>
+  </table>
+</div>
+  </div>
+</section><section class="rill-section">
+  <div class="rill-shell">
+<header class="rill-head">
+  <span class="rill-eyebrow">Scope</span>
+  <h2>Before connecting organizational data.</h2>
+</header><div class="rill-faq">
+  <details><summary>Does sample access create an account?</summary><p>Sample access opens a public browser-local workspace. Organization access requires a configured identity provider and tenant permissions.</p></details>
+  <details><summary>Where are model credentials stored?</summary><p>Provider credentials are configured on the server running the included adapter. The static pages contain no provider secrets.</p></details>
+  <details><summary>How do I clear sample workspace data?</summary><p>Use Reset demo data under Settings. Downloads and material previously sent through external services are managed separately.</p></details>
+</div>
+  </div>
+</section>
+</main>
+<footer class="rill-footer">
+  <div class="rill-shell rill-footer-grid">
+    <div class="rill-footer-brand">
+      <a class="rill-wordmark" href="../" aria-label="Rill home"><span class="rill-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M10 39V11h13c13 0 15 17 2 19l13 9M18 39V18h6c4 0 4 5 0 5h-6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M34 6c-6 7-6 11 0 11s6-4 0-11Z" fill="currentColor"/></svg></span><strong>Rill</strong></a>
+      <p>Irrigation planning software for commercial farms and cooperatives.</p>
+      <p data-company-identity hidden></p>
+    </div>
+    <div>
+      <h2>Product</h2>
+      <ul>
+        <li><a href="../solution/">Zone planning</a></li>
+        <li><a href="../problem/">The problem</a></li>
+        <li><a href="../Technology/">Technology</a></li>
+        <li><a href="../pricing/">Pricing</a></li>
+        <li><a href="../dashboard/?demo=1">Sample workspace</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Company</h2>
+      <ul>
+        <li><a href="../about/">About Rill</a></li>
+        <li><a href="../market/">Markets</a></li>
+        <li><a href="../roadmap/">Roadmap</a></li>
+        <li><a href="../contact/">Contact</a></li>
+        <li><a href="../blog/">Field notes</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Trust</h2>
+      <ul>
+        <li><a href="../security/">Security</a></li>
+        <li><a href="../legal/">Legal</a></li>
+        <li><a href="../privacy/">Privacy</a></li>
+        <li><a href="../terms/">Terms</a></li>
+        <li><a href="../data-policy/">Data policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="rill-shell rill-footer-bottom">
+    <span>© 2026 Rill</span>
+    <a href="https://github.com/Uniqkode" data-company-profile>Project maintainer</a>
+    <a href="../Technology/" data-cloud-credit>Azure deployment architecture</a>
+  </div>
+</footer>
+<script defer src="../assets/config.js"></script>
+<script defer src="../assets/app.js"></script>
+<script defer src="../assets/site.js"></script>
+</body>
+</html>

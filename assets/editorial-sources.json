@@ -1,0 +1,34 @@
+[
+  {
+    "name": "rill-field",
+    "query": "drip irrigation field",
+    "title": "Drip irrigation in Chinawal 1.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/d/da/Drip_irrigation_in_Chinawal_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/d/da/Drip_irrigation_in_Chinawal_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source": "https://commons.wikimedia.org/wiki/File:Drip_irrigation_in_Chinawal_1.jpg",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "author": "abhiriksh",
+    "description": "Drip irrigation equipment in a cultivated field",
+    "file": "editorial-1.jpg",
+    "width": 960,
+    "height": 1280,
+    "modifications": "Resized and recompressed for website display; CSS may crop the displayed image."
+  },
+  {
+    "name": "rill-detail",
+    "query": "agricultural sprinkler irrigation",
+    "title": "NRBC distributary 10 sprinkler irrigation fields Raichur Karnataka India.jpg",
+    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/NRBC_distributary_10_sprinkler_irrigation_fields_Raichur_Karnataka_India.jpg/1920px-NRBC_distributary_10_sprinkler_irrigation_fields_Raichur_Karnataka_India.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/c/cf/NRBC_distributary_10_sprinkler_irrigation_fields_Raichur_Karnataka_India.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "source": "https://commons.wikimedia.org/wiki/File:NRBC_distributary_10_sprinkler_irrigation_fields_Raichur_Karnataka_India.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "author": "Vraj Acharya, WELL Labs",
+    "description": "An irrigation channel beside cultivated fields",
+    "file": "editorial-2.jpg",
+    "width": 1500,
+    "height": 1000,
+    "modifications": "Resized and recompressed; CSS display cropping."
+  }
+]

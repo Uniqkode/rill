@@ -1,0 +1,12 @@
+{
+  "name": "rill",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api": "node service/ai-service.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
