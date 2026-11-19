@@ -23,7 +23,7 @@ The public sample uses prepared data. Records, reports and recent activity persi
 
 ## Design and assets
 
-The visual identity uses deep forest `#133B2F`, sage `#E9F2E5`, and lime `#CFE78C`, with amber for zones that need review. The main typography is Inter. Font and photograph attribution is in `assets/INTER-LICENSE.txt`, `assets/FONT-LICENSES.txt`, `assets/image-sources.json`, `assets/editorial-sources.json` and the Terms page.
+The visual identity uses deep forest `#101E14`, sage `#E9F2E5`, and lime `#D2F77C`, with amber for zones that need review. The homepage pairs an aerial illustration with clickable zones from the sample register. The main typography is Inter. Font and image attribution is in `assets/INTER-LICENSE.txt`, `assets/FONT-LICENSES.txt`, `assets/image-sources.json`, `assets/editorial-sources.json` and the Terms page.
 
 ## Azure deployment
 

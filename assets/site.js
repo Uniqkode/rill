@@ -118,6 +118,40 @@
     target.hidden = false;
   }
 
+  const fieldExplorer = select('[data-field-explorer]');
+  if (fieldExplorer && Array.isArray(window.BRAND?.records)) {
+    const records = new Map(window.BRAND.records.map(record => [record[0], record]));
+    const pins = selectAll('[data-field-zone]', fieldExplorer).filter(pin => records.has(pin.dataset.fieldZone));
+    const status = select('[data-field-status]', fieldExplorer);
+    const tones = { 'Needs review': 'review', Scheduled: 'scheduled', Watered: 'watered' };
+    const details = {
+      name: select('[data-field-name]', fieldExplorer),
+      place: select('[data-field-place]', fieldExplorer),
+      volume: select('[data-field-volume]', fieldExplorer),
+      note: select('[data-field-note]', fieldExplorer)
+    };
+
+    function selectZone(pin) {
+      const [, name, place, volume, , state, , note] = records.get(pin.dataset.fieldZone);
+      details.name.textContent = name;
+      details.place.textContent = place;
+      details.volume.textContent = formatCount.format(volume);
+      details.note.textContent = note;
+      status.textContent = state;
+      status.dataset.fieldTone = tones[state];
+      for (const item of pins) item.setAttribute('aria-pressed', String(item === pin));
+    }
+
+    if (pins.length) {
+      selectZone(pins[0]);
+      for (const pin of pins) {
+        pin.hidden = false;
+        pin.addEventListener('click', () => selectZone(pin));
+      }
+      select('[data-field-instruction]', fieldExplorer).hidden = false;
+    }
+  }
+
   for (const group of selectAll('[data-rill-billing]')) {
     const options = selectAll('button', group);
     const prices = selectAll('[data-rill-price]', group.closest('.rill-section'));

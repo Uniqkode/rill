@@ -5,5 +5,11 @@
   "credit": "Agricultural field photography",
   "license": "https://unsplash.com/license",
   "description": "Planted rows across a commercial agricultural field",
-  "modification": "Resized for website display."
+  "modification": "Resized for website display.",
+  "homepage_aerial": {
+    "asset": "aerial-fields.jpg",
+    "source": "Generated aerial illustration",
+    "description": "Center-pivot irrigated fields for the illustrative sample map.",
+    "modification": "Resized to 1320 × 990 pixels and compressed for the web."
+  }
 }

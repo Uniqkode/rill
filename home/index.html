@@ -12,7 +12,8 @@
   <meta property="og:url" content="https://uniqkode.github.io/rill/">
   <link rel="canonical" href="https://uniqkode.github.io/rill/">
   <link rel="icon" type="image/svg+xml" href="../assets/logo.svg?v=f8e3fcb6f4">
-  <link rel="stylesheet" href="../assets/rill.css?v=4705e9a6dc">
+  <link rel="stylesheet" href="../assets/rill.css?v=fc285b6da8">
+  <link rel="stylesheet" href="../assets/home.css?v=9c7c33ab62">
 </head>
 <body class="rill-site rill-modern rill-home" data-brand="rill" data-base="../" data-page="home">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -35,51 +36,46 @@
 <section class="rill-hero">
   <div class="rill-shell rill-hero-inner">
     <div class="rill-hero-copy">
-      <span class="rill-eyebrow"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8c3.6 4.7 6 7.7 6 11.3a6 6 0 0 1-12 0c0-3.6 2.4-6.6 6-11.3Z"/><path d="M9 15a3 3 0 0 0 3 3"/></svg>Irrigation planning software</span>
-      <h1>Plan your next irrigation cycle <span>in minutes.</span></h1>
-      <p>Rill turns soil readings, weather forecasts and crop stages into a zone-by-zone watering plan for commercial farms and irrigation cooperatives.</p>
+      <span class="rill-eyebrow">Irrigation planning software</span>
+      <h1>Know where <span>to water next.</span></h1>
+      <p>Turn soil readings, weather forecasts and crop stages into a daily water plan your team can review zone by zone.</p>
       <div class="rill-actions">
-        <a class="rill-button" href="../contact/">Book a live demo</a>
-        <a class="rill-button rill-button--outline" href="../Technology/">View architecture</a>
+        <a class="rill-button rill-button--bright" href="../contact/">Book a live demo</a>
+        <a class="rill-button rill-button--outline" href="#try-analysis">See how it works</a>
       </div>
     </div>
-    <div class="preview-stage">
-  <img class="preview-field" src="../assets/hero.jpg" alt="" width="1800" height="1349" fetchpriority="high">
-  <div class="preview-window">
-    <div class="preview-top">
-      <span class="preview-org"><span class="rill-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M10 39V11h13c13 0 15 17 2 19l13 9M18 39V18h6c4 0 4 5 0 5h-6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M34 6c-6 7-6 11 0 11s6-4 0-11Z" fill="currentColor"/></svg></span> Riverbend Irrigation</span>
-      <span class="rill-chip rill-chip--sage">Sample workspace</span>
-    </div>
-    <div class="preview-body">
-      <div class="preview-heading"><h2>Daily water plan</h2><small>Next 24 hours</small></div>
-      <dl class="preview-metrics">
-        <div><dt>Planned water</dt><dd>1,240 <small>m³</small></dd></div>
-        <div><dt>Active zones</dt><dd>8</dd></div>
-        <div><dt>To review</dt><dd>3</dd></div>
-      </dl>
-      <div class="preview-table">
-        <table class="preview-register">
-          <caption>Zone register</caption>
-          <thead><tr><th scope="col">Zone</th><th scope="col">Allocation</th><th scope="col">Status</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">Zone 01 · Tomato</th><td>180 m³</td><td><span class="rill-chip rill-chip--review">Needs review</span></td></tr>
-            <tr><th scope="row">Zone 03 · Onion</th><td>160 m³</td><td><span class="rill-chip rill-chip--sage">Scheduled</span></td></tr>
-            <tr><th scope="row">Zone 04 · Cabbage</th><td>130 m³</td><td><span class="rill-chip rill-chip--ready">Watered</span></td></tr>
-          </tbody>
-        </table>
+    <div class="field-explorer" data-field-explorer>
+      <header class="field-explorer-header">
+        <span><i class="field-map-icon" aria-hidden="true"></i>Sample field map</span>
+        <span class="field-instruction" data-field-instruction hidden>Select a zone</span>
+      </header>
+      <div class="field-map" role="group" aria-label="Illustrated irrigation zones">
+        <img src="../assets/aerial-fields.jpg?v=24446eaa70" alt="" width="1320" height="990" fetchpriority="high">
+        <span class="field-map-grid" aria-hidden="true"></span>
+        <span class="field-map-sweep" aria-hidden="true"></span>
+        <button type="button" class="field-pin field-pin--01" data-field-zone="RI-301" data-field-tone="review" aria-controls="field-selection" aria-pressed="true" aria-label="Zone 01, Tomato" hidden>01</button>
+        <button type="button" class="field-pin field-pin--03" data-field-zone="RI-303" data-field-tone="scheduled" aria-controls="field-selection" aria-pressed="false" aria-label="Zone 03, Onion" hidden>03</button>
+        <button type="button" class="field-pin field-pin--04" data-field-zone="RI-304" data-field-tone="watered" aria-controls="field-selection" aria-pressed="false" aria-label="Zone 04, Cabbage" hidden>04</button>
+        <button type="button" class="field-pin field-pin--05" data-field-zone="RI-305" data-field-tone="review" aria-controls="field-selection" aria-pressed="false" aria-label="Zone 05, Rice" hidden>05</button>
       </div>
-      <div class="preview-bottom">
-        <span>Showing 3 of 8 sample zones</span>
-        <a class="rill-link" href="../login/">Sign in to the demo</a>
-      </div>
+      <section class="field-selection" id="field-selection" aria-live="polite" aria-atomic="true">
+        <div class="field-selection-zone">
+          <h2 data-field-name>Zone 01 · Tomato</h2>
+          <span data-field-place>Jos · North pivot</span>
+        </div>
+        <dl class="field-selection-volume">
+          <dt>Planned water</dt>
+          <dd><span data-field-volume>180</span> <small>m³</small></dd>
+        </dl>
+        <span class="field-status" data-field-status data-field-tone="review">Needs review</span>
+        <p data-field-note>Moisture 21%. Verify the reading before the next cycle.</p>
+      </section>
     </div>
-  </div>
-</div>
   </div>
 </section>
 <section class="rill-audiences">
   <div class="rill-shell">
-    <h2>Built for teams that manage irrigation</h2>
+    <h2>Built for irrigation teams</h2>
     <ul class="rill-audience-list">
       <li><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V10l9-6 9 6v10H3Zm6 0v-8h6v8M9 16h6"/></svg>Commercial farms</li>
       <li><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2m18 0v-2a4 4 0 0 0-3-3.9M15 4.2a4 4 0 0 1 0 7.6"/><circle cx="9.5" cy="8" r="4"/></svg>Irrigation cooperatives</li>
@@ -89,10 +85,9 @@
 </section>
 <section class="rill-section rill-pillars">
   <div class="rill-shell">
-<header class="rill-head rill-head--center">
-  <span class="rill-eyebrow">The product</span>
-  <h2>Know which zone needs water next.</h2>
-  <p>Review three things together before you set the next cycle.</p>
+<header class="rill-head">
+  <span class="rill-eyebrow">Zone planning</span>
+  <h2>Read the field before you run the pump.</h2>
 </header>
 <div class="rill-grid-3">
   <article class="rill-card">
@@ -110,7 +105,7 @@
 </div>
   </div>
 </section>
-<section class="rill-section rill-section--muted">
+<section class="rill-section rill-comparison">
   <div class="rill-shell">
 <div class="rill-compare">
   <header class="rill-head">
@@ -169,13 +164,13 @@
 </div>
   </div>
 </section>
-<section class="rill-section">
+<section class="rill-section rill-workspace-features">
   <div class="rill-shell">
 <header class="rill-head">
   <span class="rill-eyebrow">Workspace features</span>
   <h2>Everything needed for a daily zone review.</h2>
 </header>
-<div class="rill-grid-3">
+<div class="rill-capability-grid">
   <article class="rill-card rill-capability"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v17h18M7 15l4-5 4 2 5-6"/><path d="M17 6h3v3"/></svg></span><h3>Zone demand</h3><p>Review the next watering window at zone level.</p><span class="rill-chip rill-chip--sage">24-hour sample window</span></article>
   <article class="rill-card rill-capability"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Zm8 0v5h4m-9 4h6m-6 4h6"/></svg></span><h3>Source reading</h3><p>Check the soil observations and capacity inputs behind a finding.</p><span class="rill-chip rill-chip--sage">2 cited inputs in the lead case</span></article>
   <article class="rill-card rill-capability"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 4v4m8 2v4m-6 2v4"/></svg></span><h3>Water allocation</h3><p>Test the effect of a reserve on a daily budget before allocating water.</p><span class="rill-chip rill-chip--sage">3-zone budget calculator</span></article>
@@ -371,6 +366,6 @@
 </footer>
 <script defer src="../assets/config.js?v=af950c991d"></script>
 <script defer src="../assets/app.js?v=e095bf60be"></script>
-<script defer src="../assets/site.js"></script>
+<script defer src="../assets/site.js?v=290415e087"></script>
 </body>
 </html>
