@@ -17,8 +17,8 @@
   catch {storageAvailable=false;return memory.has(item)?memory.get(item):fallback;}
  }
  function write(store,item,value) {
-  try {window[store].setItem(key+item,JSON.stringify(value));}
-  catch {storageAvailable=false;memory.set(item,value);notify('Browser storage is unavailable. This change lasts only until the page is refreshed.');}
+  try {window[store].setItem(key+item,JSON.stringify(value));return true;}
+  catch {storageAvailable=false;memory.set(item,value);notify('Browser storage is unavailable. This change lasts only until the page is refreshed.');return false;}
  }
  function remove(store,item) {try{window[store].removeItem(key+item);}catch{}memory.delete(item);}
  let toastTimer;
@@ -31,25 +31,32 @@
   const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);
   const link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
  }
- function enterDemo() {
-  write('sessionStorage','session',{demo:true,startedAt:Date.now()});
-  if(!storageAvailable) {
-   // Explicit public demo mode allows read-only navigation when storage is disabled.
-   window.location.assign(base+'dashboard/?demo=1');
-  } else window.location.assign(base+'dashboard/');
- }
  const menu=$('.menu-toggle');
  if(menu) menu.addEventListener('click',()=>{
   const expanded=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(expanded));menu.setAttribute('aria-label',expanded?'Close menu':'Open menu');$('#primary-navigation').classList.toggle('open',expanded);
  });
  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menu){menu.setAttribute('aria-expanded','false');menu.setAttribute('aria-label','Open menu');$('#primary-navigation')?.classList.remove('open');}});
- $$('.demo-enter').forEach(button=>button.addEventListener('click',enterDemo));
- $('#login-form')?.addEventListener('submit',event=>{
-  event.preventDefault();
-  const valid=$('#login-email').value.trim().toLowerCase()===`demo@${config.slug}.example`&&$('#login-password').value==='MVPdemo2026!';
-  $('#login-error').hidden=valid;
-  if(valid)enterDemo();else $('#login-error').scrollIntoView({block:'nearest'});
- });
+ const loginForm=$('#login-form');
+ if(loginForm){
+  $('fieldset',loginForm).disabled=false;
+  loginForm.addEventListener('submit',event=>{
+   event.preventDefault();
+   const error=$('#login-error');
+   const valid=$('#login-email').value.trim().toLowerCase()===`demo@${config.slug}.example`&&$('#login-password').value==='MVPdemo2026!';
+   if(!valid){
+    error.textContent='Check the demo email and password above.';
+    error.hidden=false;
+    return;
+   }
+   if(!write('sessionStorage','session',{demo:true,startedAt:Date.now()})){
+    error.textContent='Allow session storage in this browser to open the demo.';
+    error.hidden=false;
+    return;
+   }
+   error.hidden=true;
+   window.location.assign(base+'dashboard/');
+  });
+ }
  $('#show-password')?.addEventListener('click',()=>{
   const input=$('#login-password');const show=input.type==='password';input.type=show?'text':'password';$('#show-password').textContent=show?'Hide':'Show';$('#show-password').setAttribute('aria-label',show?'Hide password':'Show password');$('#show-password').setAttribute('aria-pressed',String(show));
  });
@@ -93,16 +100,13 @@
   });
  }
  if(document.body.dataset.page!=='dashboard')return;
- const publicDemo=new URLSearchParams(window.location.search).get('demo')==='1';
- if(!read('sessionStorage','session')?.demo){
-  if(!publicDemo){window.location.replace(base+'login/');return;}
-  write('sessionStorage','session',{demo:true,startedAt:Date.now()});
- }
- if(!storageAvailable){const notice=document.createElement('div');notice.className='storage-notice';notice.textContent='Browser storage is unavailable. Changes last until this page refreshes.';$('.app-main').prepend(notice);}
+ if(!read('sessionStorage','session')?.demo){window.location.replace(base+'login/');return;}
  const fixture=()=>config.records.map(row=>({id:row[0],name:row[1],place:row[2],value:row[3],score:row[4],status:row[5],owner:row[6],note:row[7]}));
  const saved=read('localStorage','records');
+ if(!storageAvailable){const notice=document.createElement('div');notice.className='storage-notice';notice.textContent='Browser storage is unavailable. Changes last until this page refreshes.';$('.app-main').prepend(notice);}
  const statuses=['Needs review','Scheduled',config.finalStatus];
  let records=Array.isArray(saved)&&saved.length<2000&&saved.every(r=>r&&typeof r.id==='string'&&typeof r.name==='string'&&typeof r.place==='string'&&typeof r.owner==='string'&&typeof r.note==='string'&&Number.isFinite(r.value)&&r.value>=0&&Number.isFinite(r.score)&&r.score>=0&&r.score<=100&&statuses.includes(r.status))?saved:fixture();
+ const statusTone={'Needs review':'review',Scheduled:'scheduled',[config.finalStatus]:'watered'};
  let activeRecord=null;
  function persist(){write('localStorage','records',records);render();}
  function addActivity(record,action) {
@@ -133,41 +137,124 @@
  }
  document.addEventListener('rill:report-saved',renderActivity);
  function statsHTML() {
-  const total=records.reduce((sum,r)=>sum+r.value,0),done=records.filter(r=>r.status===config.finalStatus).length,attention=records.filter(r=>r.status==='Needs review').length;
-  return [[number(records.length),config.objects+' in view','All current sample records',''],[number(total),config.totalLabel,'Total across the register',config.unit],[number(attention),'Need review','Open questions for an operator',''],[number(records.length?done/records.length*100:0)+'%',config.metricLabel,`${done} of ${records.length} records complete`,'']].map(([value,label,note,unit])=>`<div class="dashboard-stat"><span>${safe(label)}</span><strong>${safe(value)}${unit?`<small>${safe(unit)}</small>`:''}</strong><p>${safe(note)}</p></div>`).join('');
+  const total=records.reduce((sum,record)=>sum+record.value,0);
+  const watered=records.filter(record=>record.status===config.finalStatus).length;
+  const review=records.filter(record=>record.status==='Needs review').length;
+  const metrics=[
+   ['water','Planned water',number(total),config.unit,'Total across all zones','M12 3c3 4 6 7 6 11a6 6 0 1 1-12 0c0-4 3-7 6-11Z'],
+   ['zones','Active zones',number(records.length),'','In this sample plan','M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15'],
+   ['review','Needs review',number(review),'','Awaiting an operator review','M12 8v5m0 3h.01M10.4 4.9 3.8 17a1.7 1.7 0 0 0 1.5 2.5h13.4a1.7 1.7 0 0 0 1.5-2.5L13.6 4.9a1.8 1.8 0 0 0-3.2 0Z'],
+   ['watered','Watered',number(watered),'',`Of ${number(records.length)} planned zones`,'M5 12l4 4L19 6'],
+  ];
+  return metrics.map(([tone,label,value,unit,note,path])=>`
+    <div class="dashboard-stat" data-tone="${tone}">
+      <dt><span class="dashboard-stat-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg></span>${label}</dt>
+      <dd class="dashboard-stat-value">${value}${unit?` <small>${safe(unit)}</small>`:''}</dd>
+      <dd class="dashboard-stat-note">${note}</dd>
+    </div>`).join('');
  }
  function filtered() {
   const query=($('#record-search')?.value||'').trim().toLowerCase();const status=$('#status-filter')?.value||'';const sort=$('#record-sort')?.value||'priority';
   return records.filter(r=>(!status||r.status===status)&&(!query||[r.id,r.name,r.place,r.owner,r.note].some(value=>value.toLowerCase().includes(query)))).sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):sort==='value'?b.value-a.value:b.score-a.score);
  }
- function badge(status){return `<span class="status ${status==='Needs review'?'warn':''}"><i></i>${safe(status)}</span>`;}
+ function badge(status){
+  const chips={review:'review',scheduled:'sage',watered:'ready'};
+  return `<span class="rill-chip rill-chip--${chips[statusTone[status]]}">${safe(status)}</span>`;
+ }
  function tableHTML(rows) {
-  if(!rows.length)return `<div class="empty-state"><h3>No matching ${safe(config.objects.toLowerCase())}.</h3><p>Try a different search or choose All statuses.</p></div>`;
-  return `<div class="table-overflow"><table class="data-table"><thead><tr><th scope="col">${safe(config.object.toUpperCase())}</th><th scope="col">${safe(config.placeLabel.toUpperCase())}</th><th scope="col">${safe(config.unit.toUpperCase())}</th><th scope="col">PRIORITY</th><th scope="col">STATUS</th><th scope="col">OWNER</th></tr></thead><tbody>${rows.map(r=>`<tr><td><button type="button" class="record-name" data-record="${safe(r.id)}">${safe(r.name)}<small>${safe(r.id)}</small></button></td><td><span class="record-place">${safe(r.place)}</span></td><td>${number(r.value)}</td><td><span class="priority-score"><i><span style="width:${r.score}%"></span></i>${r.score}</span></td><td>${badge(r.status)}</td><td>${safe(r.owner)}</td></tr>`).join('')}</tbody></table></div>`;
+  if(!rows.length)return '<p class="workspace-empty">No matching zones. Try a different search or status.</p>';
+  const tableRows=rows.map(record=>`<tr>
+    <th scope="row"><button type="button" class="record-name" data-record="${safe(record.id)}">${safe(record.name)}<small>${safe(record.id)}</small></button></th>
+    <td><span class="record-place">${safe(record.place)}</span></td><td>${number(record.value)}</td>
+    <td><span class="priority-score"><i aria-hidden="true"><span style="width:${record.score}%"></span></i>${number(record.score)}</span></td>
+    <td>${badge(record.status)}</td><td>${safe(record.owner)}</td>
+  </tr>`).join('');
+  return `<div class="table-overflow" tabindex="0" role="region" aria-label="Zone records"><table class="data-table">
+    <thead><tr><th scope="col">Zone</th><th scope="col">Farm / zone</th><th scope="col">Allocation (${safe(config.unit)})</th><th scope="col">Priority</th><th scope="col">Status</th><th scope="col">Owner</th></tr></thead>
+    <tbody>${tableRows}</tbody>
+  </table></div>`;
+ }
+ function renderAllocation() {
+  const chart=$('#allocation-chart');
+  const maxBars=8;
+  const zones=records.length>maxBars?[...records].sort((left,right)=>right.value-left.value).slice(0,maxBars):records;
+  $('#allocation-count').textContent=zones.length<records.length?'Largest 8 allocations':`${zones.length} ${zones.length===1?'zone':'zones'}`;
+  if(!zones.length){chart.innerHTML='<p class="workspace-empty">Add a zone to see its water allocation.</p>';return;}
+  const largest=Math.max(...zones.map(zone=>zone.value));
+  const interval=Math.max(10,Math.ceil(largest/40)*10);
+  const maximum=interval*4;
+  const ticks=[4,3,2,1,0].map(step=>`<span>${number(step*interval)}</span>`).join('');
+  const bars=zones.map(zone=>{
+   const label=zone.name.split(' · ')[0].replace(/^Zone\s+/i,'');
+   const description=`${zone.name}, ${number(zone.value)} ${config.unit}, ${zone.status}`;
+   return `<li><button type="button" class="allocation-bar" data-record="${safe(zone.id)}" data-tone="${statusTone[zone.status]}" aria-label="${safe(description)}" title="${safe(description)}">
+     <span class="allocation-fill" style="--allocation:${zone.value/maximum*100}%" aria-hidden="true"></span>
+   </button><span class="allocation-label" aria-hidden="true">${safe(label)}</span></li>`;
+  }).join('');
+  const legend=statuses.map(status=>`<li><i data-tone="${statusTone[status]}" aria-hidden="true"></i>${safe(status)}</li>`).join('');
+  chart.innerHTML=`<div class="allocation-chart"><div class="allocation-axis" aria-hidden="true">${ticks}</div>
+    <ul class="allocation-bars" style="--bar-count:${zones.length}" aria-label="Allocations by zone">${bars}</ul>
+  </div><ul class="allocation-legend" aria-label="Chart legend">${legend}</ul>`;
+ }
+ function renderQueue(ranked) {
+  const review=ranked.filter(record=>record.status==='Needs review');
+  $('#attention-summary').textContent=review.length?`${review.length} ${review.length===1?'zone needs':'zones need'} review`:'';
+  const items=review.slice(0,3).map(record=>`<li><div class="review-list-heading">
+    <button type="button" class="record-name" data-record="${safe(record.id)}">${safe(record.name)}</button>
+    <span class="rill-chip rill-chip--review">${number(record.score)} / 100</span>
+  </div><p>${safe(record.note)}</p></li>`).join('');
+  $('#review-list').innerHTML=items?`<ol class="review-list" aria-label="Highest priority zones">${items}</ol>`:'<p class="workspace-empty">No pending reviews.</p>';
  }
  function render() {
   const html=statsHTML();$('#dashboard-stats').innerHTML=html;$('#report-summary').innerHTML=html;
-  const count=records.filter(r=>r.status==='Needs review').length;
-  $('#attention-summary').textContent=count?`${count} ${count===1?config.object.toLowerCase():config.objects.toLowerCase()} ${count===1?'needs':'need'} review in this sample workspace. A responsible operator chooses the next step.`:'No records need review. Check scheduled work or add the next sample record.';
-  $('#overview-table').innerHTML=tableHTML([...records].sort((a,b)=>b.score-a.score).slice(0,5));
-  const visible=filtered();$('#record-table').innerHTML=tableHTML(visible);$('#record-count').textContent=`Showing ${visible.length} of ${records.length} sample ${config.objects.toLowerCase()} · Changes saved in this browser`;
-  $$('[data-record]').forEach(button=>button.addEventListener('click',()=>openRecord(button.dataset.record)));
+  const ranked=[...records].sort((a,b)=>b.score-a.score);
+  $('#overview-table').innerHTML=tableHTML(ranked.slice(0,5));
+  const visible=filtered();$('#record-table').innerHTML=tableHTML(visible);$('#record-count').textContent=`Showing ${visible.length} of ${records.length} zones`;
+  renderAllocation();
+  renderQueue(ranked);
   renderActivity();
  }
- function activateTab(tab,updateHash=true) {
-  if(!['overview','records','reports','settings'].includes(tab))tab='overview';
-  $$('.app-panel').forEach(panel=>panel.hidden=panel.id!=='panel-'+tab);
-  $$('.app-tab').forEach(button=>{const active=button.dataset.tab===tab;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
-  $('#breadcrumb').textContent=tab==='records'?config.objects:tab[0].toUpperCase()+tab.slice(1);
-  if(updateHash)history.replaceState(null,'','#'+tab);
-  $('.app-sidebar').classList.remove('open');$('#app-menu').setAttribute('aria-expanded','false');
+ const workspaceMenu=$('#app-menu');
+ const sidebar=$('.app-sidebar');
+ const tabs=$$('.app-tab');
+ const tabLabels=new Map(tabs.map(button=>[button.dataset.tab,button.textContent.trim()]));
+ function setMenu(open) {
+  sidebar.classList.toggle('open',open);
+  workspaceMenu.setAttribute('aria-expanded',String(open));
+  workspaceMenu.setAttribute('aria-label',open?'Close workspace menu':'Open workspace menu');
  }
- $$('.app-tab').forEach(button=>button.addEventListener('click',()=>activateTab(button.dataset.tab)));
- $$('[data-open-records]').forEach(button=>button.addEventListener('click',()=>activateTab('records')));
+ function activateTab(tab,updateHash=true) {
+  if(!tabLabels.has(tab))tab='overview';
+  $$('.app-panel').forEach(panel=>panel.hidden=panel.id!=='panel-'+tab);
+  tabs.forEach(button=>{const active=button.dataset.tab===tab;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
+  $('#breadcrumb').textContent=tabLabels.get(tab);
+  setMenu(false);
+  if(updateHash){
+   history.replaceState(null,'','#'+tab);
+   $(`#panel-${tab} .workspace-panel-title`).focus();
+  }
+ }
+ tabs.forEach(button=>button.addEventListener('click',()=>activateTab(button.dataset.tab)));
+ $$('[data-open-tab]').forEach(button=>button.addEventListener('click',()=>{
+  if(button.dataset.openTab==='records'){
+   $('#status-filter').value='';
+   $('#record-search').value='';
+   render();
+  }
+  activateTab(button.dataset.openTab);
+ }));
  $('#show-attention').addEventListener('click',()=>{$('#status-filter').value='Needs review';$('#record-search').value='';render();activateTab('records');});
- $('#app-menu').addEventListener('click',()=>{const open=$('.app-sidebar').classList.toggle('open');$('#app-menu').setAttribute('aria-expanded',String(open));});
- document.addEventListener('click',event=>{if(window.innerWidth<=760&&!event.target.closest('.app-sidebar')&&!event.target.closest('#app-menu')){$('.app-sidebar').classList.remove('open');$('#app-menu').setAttribute('aria-expanded','false');}});
- document.addEventListener('keydown',event=>{if(event.key==='Escape'){$('.app-sidebar').classList.remove('open');$('#app-menu').setAttribute('aria-expanded','false');}});
+ workspaceMenu.addEventListener('click',()=>{
+  const open=!sidebar.classList.contains('open');
+  setMenu(open);
+  if(open)$('.app-tab.active',sidebar)?.focus();
+ });
+ document.addEventListener('click',event=>{if(sidebar.classList.contains('open')&&!event.target.closest('.app-sidebar, #app-menu'))setMenu(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&sidebar.classList.contains('open')){setMenu(false);workspaceMenu.focus();}});
+ $('.app-main').addEventListener('click',event=>{
+  const button=event.target.closest('[data-record]');
+  if(button)openRecord(button.dataset.record);
+ });
  window.addEventListener('hashchange',()=>activateTab(window.location.hash.slice(1),false));
  $('#record-search').addEventListener('input',render);$('#status-filter').addEventListener('change',render);$('#record-sort').addEventListener('change',render);
  function openRecord(id) {
@@ -211,5 +298,7 @@
  $$('[data-export-all]').forEach(button=>button.addEventListener('click',()=>exportCSV(true)));
  $('#logout').addEventListener('click',()=>{remove('sessionStorage','session');window.location.assign(base+'login/');});
  for(const dialog of $$('dialog'))dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});
- render();activateTab(window.location.hash.slice(1)||'overview',false);
+ render();
+ activateTab(window.location.hash.slice(1)||'overview',false);
+ $('[data-dashboard-shell]').hidden=false;
 })();

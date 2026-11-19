@@ -14,8 +14,8 @@ The main routes are `/home/`, `/pricing/`, `/security/`, `/about/`, `/legal/`, `
 
 ## Explore the sample workspace
 
-- Select **Open sample workspace** or sign in with `demo@rill.example` and `MVPdemo2026!`.
-- Run one of the prepared cases, open a source citation and keep the report for human review. Download the report with its source references and timestamps.
+- Sign in with `demo@rill.example` and `MVPdemo2026!`.
+- Check the water-allocation chart and review queue in **Overview**. Open **Forecast review** to run a prepared case, check its sources and download a dated report.
 - Open **Zones** to search and filter records, create a zone, update a note or record a watering outcome. Open **Reports** to view dated activity and export the zone register.
 - Use the water-budget calculator on **Product**, the review-time calculator on **Pricing** and the forecast-capacity calculator on **Technology**.
 
@@ -23,7 +23,7 @@ The public sample uses prepared data. Records, reports and recent activity persi
 
 ## Design and assets
 
-The visual identity uses navy `#101D34`, blue `#2255D8`, pale blue-gray `#F5F8FC`, and green and amber for decisions that are ready or need review. The main typography is Inter. Font and photograph attribution is in `assets/INTER-LICENSE.txt`, `assets/FONT-LICENSES.txt`, `assets/image-sources.json`, `assets/editorial-sources.json` and the Terms page.
+The visual identity uses deep forest `#133B2F`, sage `#E9F2E5`, and lime `#CFE78C`, with amber for zones that need review. The main typography is Inter. Font and photograph attribution is in `assets/INTER-LICENSE.txt`, `assets/FONT-LICENSES.txt`, `assets/image-sources.json`, `assets/editorial-sources.json` and the Terms page.
 
 ## Azure deployment
 

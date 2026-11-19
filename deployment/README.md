@@ -1,7 +1,7 @@
 # Deploy Rill to Azure Static Web Apps
 
 1. Create an Azure Static Web Apps resource and connect the GitHub repository and deployment branch. Use a custom static setup with the repository root as the app location and no build output directory. Azure can create the GitHub Actions workflow, or copy `azure-static-web-apps.yml.example` to `.github/workflows/azure-static-web-apps.yml` after provisioning the resource. Store the Azure deployment token as the GitHub Actions secret `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-2. Verify the homepage and direct routes, including `/Technology/`, `/login/` and `/dashboard/?demo=1`.
+2. Verify the homepage and `/Technology/`. Sign in with the demo credentials on `/login/` and check that the dashboard opens.
 3. Add an owned custom domain through the Static Web Apps domain settings and complete DNS verification. Update canonical links, Open Graph URLs, `sitemap.xml` and `robots.txt` to use the final public origin and path.
 4. Apply the business and booking fields described in [owner setup](../OWNER_SETUP.md), then verify them on the deployed website.
 

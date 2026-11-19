@@ -131,7 +131,7 @@
 /* Rill: a calm water-planning studio. */
 .v3-home.v3-rill .demo-ribbon{display:none}
 .v3-home.v3-rill .site-header{background:none;border:0;padding-top:18px}
-.v3-home.v3-rill .nav-inner{background:#fafdfe;border:1px solid #173b4425;border-radius:45px;padding-inline:25px;min-height:76px}
+.v3-home.v3-rill .nav-inner{background:#fafdfe;border:1px solid #142f2625;border-radius:45px;padding-inline:25px;min-height:76px}
 .v3-rill .button{border-radius:30px}
 .rill-opening{text-align:center;padding:65px 0 35px}
 .rill-opening h1{font-size:clamp(58px,7vw,102px);font-weight:500;line-height:1.02;letter-spacing:-.06em}
@@ -140,22 +140,22 @@
 .rill-principles{display:flex;justify-content:space-between;max-width:900px;margin:65px auto 0;border-top:1px solid var(--hairline);padding-top:23px;font-size:12px;letter-spacing:.12em;gap:25px}
 .rill-panorama{position:relative;height:490px;width:calc(100% - 96px);max-width:1500px;margin:30px auto 90px;border-radius:200px 8px 8px 8px}
 .rill-panorama>img{width:100%;height:100%;object-fit:cover;border-radius:200px 8px 8px 8px;object-position:center 62%}
-.rill-plan-card{position:absolute;right:5%;bottom:-45px;width:340px;background:#f7fcfc;padding:29px 31px;border:1px solid #173b4430;border-radius:50px 7px 7px 7px;box-shadow:12px 12px 0 #173b440c}
+.rill-plan-card{position:absolute;right:5%;bottom:-45px;width:340px;background:var(--soft);padding:29px 31px;border:1px solid #142f2630;border-radius:50px 7px 7px 7px;box-shadow:12px 12px 0 #142f260c}
 .rill-plan-card>span{font-size:12px;letter-spacing:.09em}
 .rill-plan-card h2{font-size:30px;line-height:1.2;font-weight:500;margin:20px 0}
 .rill-plan-card dl{margin:0}
-.rill-plan-card dl>div{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #173b441c;font-size:12px;gap:20px}
+.rill-plan-card dl>div{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #142f261c;font-size:12px;gap:20px}
 .rill-plan-card dd{margin:0;font-weight:600}
 .rill-plan-card p{font-size:12px;opacity:.6;margin:18px 0 0}
 .rill-channel-story{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;padding:55px 0}
 .rill-channel-story>div>p{font-size:15px;max-width:400px;opacity:.7;margin-top:25px}
 .rill-channel-story figure{height:480px;max-width:420px;margin-left:auto;width:100%}
 .rill-channel-story figure img{border-radius:190px 190px 5px 5px}
-.rill-channel-line{display:flex;align-items:center;gap:15px;max-width:350px;margin-top:35px;border-top:1px solid #007e9a70;padding-top:14px}
-.rill-channel-line i{width:25%;height:7px;background:#007e9a25;border-radius:10px}
-.rill-channel-line i:nth-child(2){background:#007e9a55}
-.rill-channel-line i:nth-child(3){background:#007e9a90}
-.rill-channel-line i:nth-child(4){background:#007e9a}
+.rill-channel-line{display:flex;align-items:center;gap:15px;max-width:350px;margin-top:35px;border-top:1px solid color-mix(in srgb, var(--accent) 44%, transparent);padding-top:14px}
+.rill-channel-line i{width:25%;height:7px;background:color-mix(in srgb, var(--accent) 15%, transparent);border-radius:10px}
+.rill-channel-line i:nth-child(2){background:color-mix(in srgb, var(--accent) 33%, transparent)}
+.rill-channel-line i:nth-child(3){background:color-mix(in srgb, var(--accent) 56%, transparent)}
+.rill-channel-line i:nth-child(4){background:var(--accent)}
 .rill-crop-detail{height:350px;padding-bottom:35px;margin-bottom:60px!important}
 .rill-crop-detail img{height:calc(100% - 25px)!important;border-radius:7px}
 .v3-rill .v3-capacity{border-radius:50px 0 50px 0}
