@@ -37,7 +37,7 @@
     <div class="rill-route-intro">
       <span class="rill-eyebrow">Security</span>
       <h1>Keep field data and decisions accountable.</h1>
-      <p>See how the sample workspace handles data today and what controls are required for organizational deployment.</p>
+      <p>See how sample data is stored and how the hosted workspace controls access.</p>
       <div class="rill-actions"><a class="rill-button" href="../data-policy/">Read the data policy</a><a class="rill-button rill-button--outline" href="../Technology/">View infrastructure</a></div>
     </div>
   </div>
@@ -52,10 +52,19 @@
   <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v16h14V5h-4M8 10h8m-8 4h5"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span><h3>Human review</h3><p>Reviewers can trace findings to a source, retain a dated report and record watering outcomes. Pump operation stays with the irrigation team.</p></article>
 </div>
   </div>
+</section><section class="rill-section">
+  <div class="rill-shell">
+    <header class="rill-head"><span class="rill-eyebrow">Hosted workspace</span><h2>Access follows membership.</h2></header>
+    <div class="rill-grid-3">
+      <article class="rill-card"><h3>Google sign-in</h3><p>Supabase Auth verifies the account and manages the session.</p></article>
+      <article class="rill-card"><h3>Workspace permissions</h3><p>Postgres checks membership for each zone record. Operators can edit records and viewers can read them.</p></article>
+      <article class="rill-card"><h3>Recorded changes</h3><p>Zone changes create activity entries with a timestamp and the signed-in account.</p></article>
+    </div>
+  </div>
 </section><section class="rill-section rill-section--muted">
   <div class="rill-shell">
 <header class="rill-head">
-  <span class="rill-eyebrow">Organizational deployment</span>
+  <span class="rill-eyebrow">Azure deployment option</span>
   <h2>Planned controls for production data.</h2>
 </header><div class="rill-table-wrap" tabindex="0" role="region" aria-label="Planned production security controls">
   <table class="rill-table">

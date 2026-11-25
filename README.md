@@ -12,6 +12,10 @@ Open [Rill](http://127.0.0.1:4173/). The website uses static HTML, CSS and JavaS
 
 The main routes are `/home/`, `/pricing/`, `/security/`, `/about/`, `/legal/`, `/solution/`, `/problem/` and `/Technology/`. The homepage is also available at `/`. Keep the capital `T` in `/Technology/` when deploying to a case-sensitive host. Operational pages include `/login/` and `/dashboard/`.
 
+## Hosted workspace
+
+Rill can run with Google sign-in, shared irrigation zones, workspace roles and database-backed change history. The hosted build starts with an empty register in each new workspace. Owners can share a time-limited invite link with an operator or viewer. See the [Supabase and Cloudflare setup](deployment/README.md) to configure the live build.
+
 ## Explore the sample workspace
 
 - Sign in with `demo@rill.example` and `MVPdemo2026!`.

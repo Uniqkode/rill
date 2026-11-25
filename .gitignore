@@ -5,3 +5,6 @@ node_modules/
 !.env.example
 !.env.azure.example
 *.log
+dist/
+.rill-build-*/
+!.env.supabase.example

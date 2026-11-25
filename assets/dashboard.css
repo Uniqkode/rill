@@ -293,3 +293,12 @@
   .dashboard-stat { padding-inline: .7rem; }
   .allocation-chart { gap: .35rem; }
 }
+
+.workspace-entry { max-width: 620px; margin-inline: auto; padding-block: clamp(3rem, 9vw, 6rem); }
+.workspace-entry h1 { margin-top: 0; font-size: clamp(1.7rem, 5vw, 2.6rem); line-height: 1.15; letter-spacing: -.05em; }
+.workspace-entry form, .workspace-entry button, .workspace-settings-form { margin-top: .85rem; }
+.workspace-settings-form label, .workspace-settings-form p { margin-bottom: .55rem; }
+.workspace-form-error { padding: .6rem .75rem; border-radius: .45rem; color: var(--amber); background: var(--amber-wash); font-size: .88rem; }
+.workspace-picker select { min-width: 0; max-width: min(17rem, 42vw); margin: 0; }
+.workspace-account strong { overflow-wrap: anywhere; }
+.workspace-zone-fields { margin-bottom: .6rem; }

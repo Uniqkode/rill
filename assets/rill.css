@@ -540,3 +540,9 @@ body.rill-site {
   .login-photo { min-height: 12rem; }
   .login-photo-copy p { max-width: 16ch; }
 }
+
+body[data-workspace-mode='live'] [data-demo-only] { display: none !important; }
+.login-auth > p { margin-block: .7rem; color: var(--slate); font-size: .94rem; }
+.login-auth .login-error { margin-top: .5rem; }
+.login-auth button:disabled { cursor: default; opacity: .55; }
+.login-auth [data-invite-actions] .rill-button { flex: 1 1 10rem; margin-top: .3rem; }

@@ -12,19 +12,38 @@
   <link rel="stylesheet" href="../assets/product.css">
   <link rel="stylesheet" href="../assets/dashboard.css?v=f676443fdd">
 </head>
-<body class="rill-site rill-dashboard" data-brand="rill" data-base="../" data-page="dashboard">
+<body class="rill-site rill-dashboard" data-brand="rill" data-base="../" data-page="dashboard" data-workspace-mode="demo">
 <a class="skip-link" href="#main">Skip to workspace</a>
+<main class="workspace-entry rill-shell" data-workspace-boot hidden>
+  <section class="workspace-card" aria-labelledby="workspace-boot-title">
+    <h1 id="workspace-boot-title">Opening Rill</h1>
+    <p data-workspace-boot-status role="status">Checking your sign-in and workspace access…</p>
+    <button type="button" class="rill-button rill-button--outline" data-workspace-retry hidden>Reload workspace</button>
+  </section>
+</main>
+<main class="workspace-entry rill-shell" data-workspace-setup hidden>
+  <section class="workspace-card" aria-labelledby="setup-heading">
+    <h1 id="setup-heading">Create a workspace</h1>
+    <p>Give your farm, cooperative, or operations team a workspace for its zone register and irrigation records.</p>
+    <form id="create-workspace" method="post">
+      <label>Workspace name<input name="name" maxlength="100" required autocomplete="organization"></label>
+      <p id="create-workspace-error" class="workspace-form-error" role="alert" hidden></p>
+      <button type="submit" class="rill-button">Create workspace</button>
+    </form>
+    <button type="button" class="workspace-text-button" data-setup-signout>Log out</button>
+  </section>
+</main>
 <div class="workspace-shell" data-dashboard-shell hidden>
   <aside class="app-sidebar" id="workspace-navigation">
     <a class="rill-wordmark" href="../" aria-label="Rill home"><span class="rill-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M10 39V11h13c13 0 15 17 2 19l13 9M18 39V18h6c4 0 4 5 0 5h-6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M34 6c-6 7-6 11 0 11s6-4 0-11Z" fill="currentColor"/></svg></span><strong>Rill</strong></a>
     <div class="workspace-account">
-      <span aria-hidden="true">RI</span>
-      <div><strong>Riverbend Irrigation</strong><small>Sample farm</small></div>
+      <span aria-hidden="true" data-workspace-initials>RI</span>
+      <div><strong data-workspace-name>Riverbend Irrigation</strong><small data-workspace-role>Sample farm</small></div>
     </div>
     <nav aria-label="Workspace navigation">
       <button type="button" class="app-tab active" data-tab="overview" aria-controls="panel-overview" aria-pressed="true"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Overview</span></button>
       <button type="button" class="app-tab" data-tab="records" aria-controls="panel-records" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg><span>Zones</span></button>
-      <button type="button" class="app-tab" data-tab="forecast" aria-controls="panel-forecast" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 18a3.6 3.6 0 1 0-1.1-7 6 6 0 0 0-11.5-1.3A4.2 4.2 0 0 0 7 18h12.4ZM8 21h4m4 0h2"/></svg><span>Forecast review</span></button>
+      <button type="button" class="app-tab" data-tab="forecast" data-demo-only aria-controls="panel-forecast" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 18a3.6 3.6 0 1 0-1.1-7 6 6 0 0 0-11.5-1.3A4.2 4.2 0 0 0 7 18h12.4ZM8 21h4m4 0h2"/></svg><span>Forecast review</span></button>
       <button type="button" class="app-tab" data-tab="reports" aria-controls="panel-reports" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Zm8 0v5h4M9 12h6m-6 4h6"/></svg><span>Reports</span></button>
       <button type="button" class="app-tab" data-tab="settings" aria-controls="panel-settings" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16M8 5v4m8 1v4m-6 1v4"/></svg><span>Settings</span></button>
     </nav>
@@ -40,8 +59,12 @@
         <span>Water operations</span><span aria-hidden="true">/</span><strong id="breadcrumb">Overview</strong>
       </div>
       <div class="workspace-topbar-account">
-        <span class="rill-chip rill-chip--sage">Demo workspace</span>
-        <span class="workspace-avatar" aria-label="Demo Operator" title="Demo Operator">DO</span>
+        <label class="workspace-picker" data-workspace-picker hidden>
+          <span class="rill-visually-hidden">Switch workspace</span>
+          <select></select>
+        </label>
+        <span class="rill-chip rill-chip--sage" data-demo-only>Demo workspace</span>
+        <span class="workspace-avatar" data-account-avatar aria-label="Demo Operator" title="Demo Operator">DO</span>
       </div>
     </header>
     <h1 class="rill-visually-hidden">Rill workspace</h1>
@@ -49,12 +72,13 @@
       <section id="panel-overview" class="app-panel" aria-labelledby="overview-heading">
         <header class="workspace-hero">
           <div>
-            <p class="workspace-plan-date"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4m8-4v4M4 11h16"/></svg>Sample water plan · 14 November 2026</p>
+            <p class="workspace-plan-date" data-demo-only><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 4v4m8-4v4M4 11h16"/></svg>Sample water plan · 14 November 2026</p>
             <h2 id="overview-heading" class="workspace-panel-title" tabindex="-1">Irrigation overview</h2>
             <p>See where water is allocated and which zones need a decision.</p>
           </div>
           <div class="workspace-actions">
-            <button class="rill-button rill-button--bright" type="button" data-open-tab="forecast">Review forecast</button>
+            <button class="rill-button rill-button--bright" type="button" data-open-tab="forecast" data-demo-only>Review forecast</button>
+            <button type="button" class="rill-button workspace-ghost" data-live-refresh hidden>Refresh plan</button>
             <button class="rill-button workspace-ghost add-record" type="button"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add zone</button>
           </div>
         </header>
@@ -101,7 +125,7 @@
         </div>
       </section>
 
-      <section id="panel-forecast" class="app-panel" aria-labelledby="forecast-heading" hidden>
+      <section id="panel-forecast" class="app-panel" aria-labelledby="forecast-heading" data-demo-only hidden>
         <header class="workspace-panel-head">
           <div><h2 id="forecast-heading" class="workspace-panel-title" tabindex="-1">Forecast review</h2><p>Compare the sample forecasts with their source observations and keep a report for operator review.</p></div>
         </header>
@@ -162,12 +186,12 @@
 
       <section id="panel-reports" class="app-panel" aria-labelledby="reports-heading" hidden>
         <header class="workspace-panel-head">
-          <div><h2 id="reports-heading" class="workspace-panel-title" tabindex="-1">Reports</h2><p>Download zone records and review the history saved in this browser.</p></div>
+          <div><h2 id="reports-heading" class="workspace-panel-title" tabindex="-1">Reports</h2><p data-reports-intro>Download zone records and review the history saved in this browser.</p></div>
           <button type="button" class="rill-button" data-export-all><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v11m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Export full register</button>
         </header>
         <dl id="report-summary" class="dashboard-stats" aria-label="Current irrigation totals"></dl>
         <div class="workspace-report-grid">
-          <section class="workspace-card" aria-labelledby="analysis-history-heading">
+          <section class="workspace-card" aria-labelledby="analysis-history-heading" data-demo-only>
             <h3 id="analysis-history-heading">Saved analyses</h3>
             <div data-ai-history><p>Save an analysis from Forecast review to see it here.</p></div>
             <button type="button" class="workspace-text-button" data-open-tab="forecast">Go to forecast review</button>
@@ -181,27 +205,50 @@
 
       <section id="panel-settings" class="app-panel" aria-labelledby="settings-heading" hidden>
         <header class="workspace-panel-head">
-          <div><h2 id="settings-heading" class="workspace-panel-title" tabindex="-1">Settings</h2><p>Manage this browser’s demo workspace.</p></div>
+          <div><h2 id="settings-heading" class="workspace-panel-title" tabindex="-1">Settings</h2><p data-settings-intro>Manage this browser’s demo workspace.</p></div>
         </header>
         <div class="workspace-report-grid">
           <section class="workspace-card" aria-labelledby="account-heading">
-            <h3 id="account-heading">Demo account</h3>
+            <h3 id="account-heading" data-account-title>Demo account</h3>
             <dl class="workspace-details">
-              <div><dt>Workspace</dt><dd>Riverbend Irrigation</dd></div>
-              <div><dt>Email</dt><dd>demo@rill.example</dd></div>
-              <div><dt>Role</dt><dd>Demo Operator</dd></div>
+              <div><dt>Workspace</dt><dd data-account-workspace>Riverbend Irrigation</dd></div>
+              <div><dt>Email</dt><dd data-account-email>demo@rill.example</dd></div>
+              <div><dt>Role</dt><dd data-account-role>Demo Operator</dd></div>
             </dl>
-            <a class="rill-link" href="../security/">Read about demo access</a>
+            <a class="rill-link" href="../security/" data-demo-only>Read about demo access</a>
           </section>
-          <section class="workspace-card" aria-labelledby="reset-heading">
+          <section class="workspace-card" aria-labelledby="reset-heading" data-demo-only>
             <h3 id="reset-heading">Reset workspace</h3>
             <p>Clear the saved zone edits, reports, activity and pilot brief from this browser, then sign in again to restore the sample plan.</p>
             <button type="button" class="rill-button rill-button--outline" data-reset>Reset demo data</button>
           </section>
+          <section class="workspace-card" aria-labelledby="invite-heading" data-owner-settings hidden>
+            <h3 id="invite-heading">Invite a teammate</h3>
+            <p>Create a link for their Google account. It expires in seven days.</p>
+            <form id="create-invite" class="workspace-settings-form" method="post">
+              <label>Google account email<input name="email" type="email" maxlength="254" required></label>
+              <label>Role<select name="role"><option value="operator">Operator · read and edit</option><option value="viewer">Viewer · read only</option></select></label>
+              <p id="invite-error" class="workspace-form-error" role="alert" hidden></p>
+              <button class="rill-button" type="submit">Create invite link</button>
+            </form>
+            <div class="workspace-settings-form" data-invite-result hidden>
+              <label>Invite link<input type="url" id="invite-link" readonly></label>
+              <button type="button" class="rill-button rill-button--outline" data-copy-invite>Copy link</button>
+              <p id="invite-status" role="status"></p>
+            </div>
+          </section>
+          <section class="workspace-card" aria-labelledby="new-workspace-heading" data-live-settings hidden>
+            <h3 id="new-workspace-heading">New workspace</h3>
+            <form id="create-another-workspace" class="workspace-settings-form" method="post">
+              <label>Workspace name<input name="name" maxlength="100" required autocomplete="organization"></label>
+              <p id="create-another-error" class="workspace-form-error" role="alert" hidden></p>
+              <button class="rill-button rill-button--outline" type="submit">Create workspace</button>
+            </form>
+          </section>
         </div>
       </section>
     </div>
-    <footer class="workspace-footer">Demo changes are saved in this browser.</footer>
+    <footer class="workspace-footer" data-demo-only>Demo changes are saved in this browser.</footer>
   </main>
 </div>
 
@@ -213,6 +260,11 @@
   <div class="workspace-dialog-body">
     <h2 id="detail-name"></h2>
     <dl id="detail-meta" class="workspace-details"></dl>
+    <div class="workspace-field-row workspace-zone-fields" data-live-edit hidden>
+      <label>Allocation (m³)<input type="number" id="detail-value" min="0.1" max="1000000" step="0.1" required></label>
+      <label>Priority (0–100)<input type="number" id="detail-score" min="0" max="100" step="1" required></label>
+      <label>Status<select id="detail-status"><option>Scheduled</option><option>Needs review</option><option>Watered</option></select></label>
+    </div>
     <label for="detail-note">Watering note</label>
     <textarea id="detail-note" rows="4" maxlength="1500"></textarea>
     <div class="workspace-actions">
@@ -237,11 +289,12 @@
       <label>Responsible operator<input name="owner" maxlength="80" required></label>
     </div>
     <label>Watering note<textarea name="note" rows="3" maxlength="1500" required></textarea></label>
-    <button type="submit" class="rill-button">Add sample zone</button>
+    <button type="submit" class="rill-button" data-add-submit>Add sample zone</button>
   </form>
 </dialog>
 <div class="toast" role="status" aria-live="polite"></div>
 <noscript><p class="rill-shell">Turn on JavaScript to use the demo workspace.</p></noscript>
+<!-- rill-live-scripts -->
 <script src="../assets/config.js?v=af950c991d" defer></script>
 <script src="../assets/app.js?v=e095bf60be" defer></script>
 <script src="../assets/ai-workspace.js" defer></script>
