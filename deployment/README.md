@@ -1,7 +1,11 @@
-# Deploy Rill to Azure Static Web Apps
+# Deploy the Rill website
+
+GitHub Pages publishes the public website from `main`. The sign-in and dashboard routes open the Cloudflare Pages deployment built from `rill-live-workspace`. [Live workspace deployment guide](https://github.com/Uniqkode/rill/blob/rill-live-workspace/deployment/README.md)
+
+## Optional Azure Static Web Apps deployment
 
 1. Create an Azure Static Web Apps resource and connect the GitHub repository and deployment branch. Use a custom static setup with the repository root as the app location and no build output directory. Azure can create the GitHub Actions workflow, or copy `azure-static-web-apps.yml.example` to `.github/workflows/azure-static-web-apps.yml` after provisioning the resource. Store the Azure deployment token as the GitHub Actions secret `AZURE_STATIC_WEB_APPS_API_TOKEN`.
-2. Verify the homepage and `/Technology/`. Sign in with the demo credentials on `/login/` and check that the dashboard opens.
+2. Verify the homepage and `/Technology/`. Check that `/login/` and `/dashboard/` open the hosted workspace.
 3. Add an owned custom domain through the Static Web Apps domain settings and complete DNS verification. Update canonical links, Open Graph URLs, `sitemap.xml` and `robots.txt` to use the final public origin and path.
 4. Apply the business and booking fields described in [owner setup](../OWNER_SETUP.md), then verify them on the deployed website.
 

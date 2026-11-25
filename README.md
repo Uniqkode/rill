@@ -12,14 +12,11 @@ Open [Rill](http://127.0.0.1:4173/). The website uses static HTML, CSS and JavaS
 
 The main routes are `/home/`, `/pricing/`, `/security/`, `/about/`, `/legal/`, `/solution/`, `/problem/` and `/Technology/`. The homepage is also available at `/`. Keep the capital `T` in `/Technology/` when deploying to a case-sensitive host. Operational pages include `/login/` and `/dashboard/`.
 
-## Explore the sample workspace
+## Open the live workspace
 
-- Sign in with `demo@rill.example` and `MVPdemo2026!`.
-- Check the water-allocation chart and review queue in **Overview**. Open **Forecast review** to run a prepared case, check its sources and download a dated report.
-- Open **Zones** to search and filter records, create a zone, update a note or record a watering outcome. Open **Reports** to view dated activity and export the zone register.
-- Use the water-budget calculator on **Product**, the review-time calculator on **Pricing** and the forecast-capacity calculator on **Technology**.
+GitHub Pages publishes the public website from `main`. Its login and dashboard routes open the hosted workspace on Cloudflare Pages. Rill uses Supabase Auth for email and password sign-in and Supabase Postgres for zone records and workspace activity. [Sign in to Rill](https://uniqkode-rill.pages.dev/login/)
 
-The public sample uses prepared data. Records, reports and recent activity persist in the current browser. The operator reviews every watering decision and runs the pump separately.
+The public website includes the sample field explorer and the water-budget, review-time and forecast-capacity calculators. The irrigation team reviews watering decisions and operates the pump.
 
 ## Design and assets
 
