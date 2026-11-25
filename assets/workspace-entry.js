@@ -31,24 +31,40 @@
 
   async function login() {
     $('[data-live-login]').hidden = false;
-    const button = $('[data-google-login]');
     const status = $('[data-live-login-status]');
     const error = $('[data-live-login-error]');
-    const clearStatus = () => { status.textContent = ''; button.disabled = false; };
     if (!backend) {
       status.textContent = '';
       showError(error, 'The workspace connection is unavailable.');
       return;
     }
 
-    async function signIn() {
-      error.hidden = true;
-      button.disabled = true;
-      status.textContent = 'Opening Google sign-in…';
-      try { await backend.signIn(loginUrl.href); }
-      catch { clearStatus(); showError(error, 'Google sign-in could not start. Try again.'); }
-    }
-    button.addEventListener('click', signIn);
+    const form = $('#account-form');
+    const fields = form.querySelector('fieldset');
+    const email = form.elements.email;
+    const password = form.elements.password;
+    const submit = form.querySelector('button[type="submit"]');
+    const title = $('#login-title');
+    const passwordToggle = $('[data-account-password-toggle]');
+    const passwordLabel = $('[data-account-password-label]');
+    const modeButtons = form.querySelectorAll('[data-account-mode]');
+    const inviteActions = $('[data-invite-actions]');
+    const modes = {
+      signin: { title: 'Log in to Rill', submit: 'Log in', pending: 'Signing in…' },
+      signup: { title: 'Create your account', submit: 'Create account', pending: 'Creating account…' },
+      reset: { title: 'Reset your password', submit: 'Send reset link', pending: 'Sending reset link…' },
+      update: { title: 'Choose a new password', submit: 'Save password', pending: 'Saving password…' }
+    };
+    const authErrors = new Map([
+      ['invalid_credentials', 'Check your email address and password.'],
+      ['email_not_confirmed', 'Confirm your email address before signing in.'],
+      ['email_address_not_authorized', 'Email delivery is unavailable for this address. Ask your workspace owner for help.'],
+      ['signup_disabled', 'Ask your workspace owner to create your account.'],
+      ['weak_password', 'Choose a stronger password and try again.'],
+      ['same_password', 'Choose a password you have not used for this account.'],
+      ['over_email_send_rate_limit', 'Wait a minute before requesting another email.'],
+      ['over_request_rate_limit', 'Too many attempts. Wait a minute and try again.']
+    ]);
     let token;
     try { token = readInvite(); }
     catch {
@@ -56,17 +72,42 @@
       showError(error, 'Allow browser session storage to open this invite.');
       return;
     }
+    let mode;
+    const invitePrompt = () => token ? 'Use the email address that received the workspace invite.' : '';
 
-    const params = new URLSearchParams(window.location.search);
-    try {
-      const user = await backend.user();
-      if (!user) {
-        if (window.location.search) history.replaceState(null, '', loginUrl.pathname);
-        clearStatus();
-        if (params.has('error') || params.has('code')) showError(error, 'Sign-in was not completed. Try again with Google.');
-        if (token) status.textContent = 'Sign in with the Google account that was invited.';
-        return;
+    function showPassword(visible) {
+      password.type = visible ? 'text' : 'password';
+      passwordToggle.textContent = visible ? 'Hide' : 'Show';
+      passwordToggle.setAttribute('aria-label', visible ? 'Hide password' : 'Show password');
+      passwordToggle.setAttribute('aria-pressed', String(visible));
+    }
+
+    function showMode(next, message = '') {
+      mode = next;
+      title.textContent = modes[mode].title;
+      submit.textContent = modes[mode].submit;
+      status.textContent = message;
+      error.hidden = true;
+      form.hidden = false;
+      const needsEmail = mode !== 'update';
+      const needsPassword = mode !== 'reset';
+      const newPassword = mode === 'signup' || mode === 'update';
+      $('[data-account-email-label]').hidden = email.hidden = email.disabled = !needsEmail;
+      $('[data-account-password-field]').hidden = passwordLabel.hidden = password.disabled = !needsPassword;
+      passwordLabel.textContent = newPassword ? 'New password' : 'Password';
+      password.autocomplete = newPassword ? 'new-password' : 'current-password';
+      password.value = '';
+      showPassword(false);
+      const signingIn = mode === 'signin';
+      for (const button of modeButtons) {
+        const backToLogin = button.dataset.accountMode === 'signin';
+        button.hidden = mode === 'update' || (backToLogin ? signingIn : !signingIn);
       }
+    }
+
+    async function openWorkspace() {
+      form.hidden = true;
+      error.hidden = true;
       if (!token) { openDashboard(); return; }
       status.textContent = 'Opening your invited workspace…';
       try {
@@ -76,24 +117,104 @@
       } catch (issue) {
         status.textContent = '';
         showError(error, issue.code === '42501'
-          ? 'This invite is unavailable for the current account. Use the Google account that was invited or request another link.'
+          ? 'Use the email address that received the invite or request another link.'
           : 'The invite could not be opened. Reload to try again.');
-        const actions = $('[data-invite-actions]');
-        actions.hidden = false;
-        $('[data-ignore-invite]').addEventListener('click', () => {
-          sessionStorage.removeItem(inviteKey);
-          openDashboard();
-        });
-        $('[data-switch-account]').addEventListener('click', async event => {
-          event.currentTarget.disabled = true;
-          try { await backend.signOut(); await signIn(); }
-          catch { showError(error, 'Your current session could not be closed. Try again.'); }
-          finally { $('[data-switch-account]').disabled = false; }
-        });
+        inviteActions.hidden = false;
+      }
+    }
+
+    $('[data-ignore-invite]').addEventListener('click', () => {
+      sessionStorage.removeItem(inviteKey);
+      openDashboard();
+    });
+    $('[data-switch-account]').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        await backend.signOut();
+        inviteActions.hidden = true;
+        email.value = '';
+        showMode('signin', invitePrompt());
+        email.focus();
+      } catch {
+        showError(error, 'Could not sign out. Try again.');
+      } finally {
+        button.disabled = false;
+      }
+    });
+    passwordToggle.addEventListener('click', () => showPassword(password.type === 'password'));
+    for (const button of modeButtons) {
+      button.addEventListener('click', () => {
+        const next = button.dataset.accountMode;
+        showMode(next, next === 'signup' || next === 'signin' ? invitePrompt() : '');
+        email.focus();
+      });
+    }
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (fields.disabled) return;
+      const address = email.value.trim();
+      const value = password.value;
+      error.hidden = true;
+      if ((mode === 'signup' || mode === 'update') && (value.length < 8 || new TextEncoder().encode(value).length > 72)) {
+        showError(error, 'Use at least 8 characters and keep the password within 72 bytes.');
+        return;
+      }
+      fields.disabled = true;
+      status.textContent = modes[mode].pending;
+      try {
+        if (mode === 'signup') {
+          const { session } = await backend.signUp(address, value, loginUrl.href);
+          if (session) {
+            await backend.signOut();
+            showMode('signin');
+            showError(error, 'Email confirmation is unavailable. Ask your workspace owner for help.');
+            return;
+          }
+          showMode('signin', 'Check your email for a confirmation link. Open it in this browser.');
+        } else if (mode === 'reset') {
+          await backend.requestPasswordReset(address, loginUrl.href);
+          showMode('signin', 'If this email has a Rill account, you’ll receive a reset link. Open it in this browser.');
+        } else {
+          if (mode === 'update') await backend.updatePassword(value);
+          else await backend.signIn(address, value);
+          password.value = '';
+          await openWorkspace();
+        }
+      } catch (issue) {
+        status.textContent = '';
+        showError(error, authErrors.get(issue?.code) || 'Rill could not complete this request. Try again in a moment.');
+      } finally {
+        fields.disabled = false;
+      }
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    const fragment = new URLSearchParams(window.location.hash.slice(1));
+    const code = params.get('code');
+    try {
+      if (code || params.has('error') || fragment.has('error')) {
+        try {
+          if (!code) throw new Error('Invalid email link');
+          const { redirectType } = await backend.exchangeEmailCode(code);
+          if (redirectType === 'recovery') showMode('update');
+          else await openWorkspace();
+        } catch {
+          showMode('signin', invitePrompt());
+          showError(error, 'This email link could not open a session. Log in or request a new link in this browser.');
+        } finally {
+          history.replaceState(null, '', loginUrl.pathname);
+        }
+      } else if (await backend.user()) {
+        await openWorkspace();
+      } else {
+        showMode('signin', invitePrompt());
       }
     } catch {
-      clearStatus();
+      showMode('signin', invitePrompt());
       showError(error, 'The workspace connection could not be verified. Try again in a moment.');
+    } finally {
+      fields.disabled = false;
     }
   }
 
@@ -120,14 +241,14 @@
     $('[data-workspace-initials]').textContent = initials(workspace.name, 'RI');
     $('[data-workspace-role]').textContent = workspace.role;
     $('[data-account-workspace]').textContent = workspace.name;
-    $('[data-account-email]').textContent = user.email || 'Google account';
+    $('[data-account-email]').textContent = user.email || 'Rill account';
     $('[data-account-role]').textContent = workspace.role;
 
     const display = typeof user.user_metadata?.full_name === 'string' ? user.user_metadata.full_name : user.email || '';
     const avatar = $('[data-account-avatar]');
-    avatar.textContent = initials(display, 'GO');
+    avatar.textContent = initials(display, 'RI');
     avatar.title = display;
-    avatar.setAttribute('aria-label', display || 'Google account');
+    avatar.setAttribute('aria-label', display || 'Rill account');
 
     const picker = $('[data-workspace-picker]');
     const list = picker.querySelector('select');

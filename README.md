@@ -14,7 +14,7 @@ The main routes are `/home/`, `/pricing/`, `/security/`, `/about/`, `/legal/`, `
 
 ## Hosted workspace
 
-Rill can run with Google sign-in, shared irrigation zones, workspace roles and database-backed change history. The hosted build starts with an empty register in each new workspace. Owners can share a time-limited invite link with an operator or viewer. See the [Supabase and Cloudflare setup](deployment/README.md) to configure the live build.
+Rill supports email and password sign-in, shared irrigation zones, workspace roles and database-backed change history. The hosted build starts with an empty register in each new workspace. Owners can share a time-limited invite link with an operator or viewer. [Supabase and Cloudflare setup](deployment/README.md)
 
 ## Explore the sample workspace
 

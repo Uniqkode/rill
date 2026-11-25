@@ -6,7 +6,7 @@
   if (!config || typeof window.supabase?.createClient !== 'function') return;
 
   const client = window.supabase.createClient(config.url, config.publishableKey, {
-    auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
+    auth: { flowType: 'pkce', detectSessionInUrl: false, persistSession: true, autoRefreshToken: true }
   });
   const zoneColumns = 'id,name,place,value,score,status,owner,note,revision';
   const normalize = zone => ({ ...zone, value: Number(zone.value) });
@@ -22,8 +22,20 @@
       if (response.error?.name === 'AuthSessionMissingError' || response.error?.status === 401 || response.error?.status === 403) return null;
       return result(response).user;
     },
-    async signIn(redirectTo) {
-      result(await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo, queryParams: { prompt: 'select_account' } } }));
+    async signIn(email, password) {
+      result(await client.auth.signInWithPassword({ email, password }));
+    },
+    async signUp(email, password, emailRedirectTo) {
+      return result(await client.auth.signUp({ email, password, options: { emailRedirectTo } }));
+    },
+    async requestPasswordReset(email, redirectTo) {
+      result(await client.auth.resetPasswordForEmail(email, { redirectTo }));
+    },
+    async exchangeEmailCode(code) {
+      return result(await client.auth.exchangeCodeForSession(code));
+    },
+    async updatePassword(password) {
+      result(await client.auth.updateUser({ password }));
     },
     async signOut() {
       result(await client.auth.signOut({ scope: 'local' }));

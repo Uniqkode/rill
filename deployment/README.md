@@ -1,17 +1,32 @@
 # Deploy Rill’s hosted workspace
 
-The hosted build uses Cloudflare Pages for the static frontend, Supabase Auth for Google sign-in, and Supabase Postgres for workspaces, roles, irrigation zones and activity. The database checks the signed-in user’s membership on every read and write.
+The hosted build uses Cloudflare Pages for the static frontend, Supabase Auth for email and password sign-in, and Supabase Postgres for workspaces, roles, irrigation zones and activity. The database checks the signed-in user’s membership on every read and write.
 
 ## Supabase
 
-Both migrations are already applied to Uniqkode’s Rill database. [Rill in Supabase](https://supabase.com/dashboard/project/keuywmomjslltntmzjbi)
+The migrations are already applied to Uniqkode’s Rill database. [Rill in Supabase](https://supabase.com/dashboard/project/keuywmomjslltntmzjbi)
 
-1. For a new project, run both SQL migrations in order and keep `rill_private` out of the Data API’s exposed schemas. [Workspace schema](../supabase/migrations/20261125064636_rill_workspace.sql) · [API hardening](../supabase/migrations/20261125064841_rill_workspace_api_hardening.sql)
-2. Copy the project’s HTTPS URL and the **publishable key** from the API Keys settings. Keep database credentials, secret keys and Google’s client secret out of the static site and repository.
-3. Enable Google under Supabase Authentication providers. Create a Web application OAuth client in Google Cloud and add the Supabase callback URI shown in the provider settings. For Uniqkode’s Rill project, use `https://keuywmomjslltntmzjbi.supabase.co/auth/v1/callback`. Add the deployed website origin in the OAuth client settings and enter its client ID and secret in Supabase.
-4. Set the Supabase Auth Site URL to your Cloudflare Pages URL and add its exact `/login/` URL to the Auth redirect allow list. Add a local URL such as `http://127.0.0.1:4173/login/` when testing locally. Set the Google consent screen to the audience who can sign in.
+1. For a new project, run the SQL migrations in order and keep `rill_private` out of the Data API’s exposed schemas. [Migrations](../supabase/migrations/)
+2. Copy the project’s HTTPS URL and **publishable key** from API Keys. Store database credentials and secret keys in the services that use them.
+3. Enable the Email provider, account creation and **Confirm email**. Keep Google disabled. Email confirmation preserves the ownership check for workspace invites. [Rill Auth providers](https://supabase.com/dashboard/project/keuywmomjslltntmzjbi/auth/providers)
+4. Set the Auth Site URL to the Cloudflare Pages URL and add its exact `/login/` URL to the redirect allow list. Add `http://127.0.0.1:4173/login/` to the list for local testing. Users open confirmation and reset links in the browser that requested them. [Redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls)
 
-See the [Supabase Google sign-in guide](https://supabase.com/docs/guides/auth/social-sign-in/auth-google) and the [Supabase Auth redirect URL guide](https://supabase.com/docs/guides/auth/redirect-urls).
+## Resend SMTP
+
+Verify a sending domain you own by adding the DNS records Resend provides. The GitHub Pages and Cloudflare Pages addresses are website hostnames. Supabase's built-in email service delivers to members of the Supabase project team. [Resend domain verification](https://resend.com/docs/dashboard/domains/introduction) · [Supabase SMTP](https://supabase.com/docs/guides/auth/auth-smtp)
+
+Use Resend’s Supabase integration, or enable custom SMTP in Rill’s Supabase Auth settings and enter these values. [Resend integration](https://resend.com/supabase) · [Rill SMTP settings](https://supabase.com/dashboard/project/keuywmomjslltntmzjbi/auth/smtp)
+
+| Setting | Value |
+| --- | --- |
+| Sender name | `Rill` |
+| Sender email | An address on the verified Resend domain |
+| SMTP host | `smtp.resend.com` |
+| Port | `465` |
+| Username | `resend` |
+| Password | A Resend key with Sending access scoped to that domain |
+
+Keep the Resend key in Supabase. Turn off click tracking for the sender domain so the Auth links keep their original destinations. Confirm signup and password reset delivery with a test account after saving the settings.
 
 ## Cloudflare Pages
 
@@ -33,9 +48,9 @@ node --env-file=.env.supabase scripts/build-site.mjs
 python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
-Run the workspace permission check in a test project after applying both migrations. It uses temporary test accounts and rolls back its changes. [Permission check](../supabase/tests/workspace.sql)
+Run the workspace permission check in a test project after applying the migrations. It uses temporary test accounts and rolls back its changes. [Permission check](../supabase/tests/workspace.sql)
 
-Use the Google account you configured to sign in. Create a workspace and add a zone. Check it from a second browser, then invite a separate Google account as a viewer and verify it can read the zone. Test an account with a different workspace to confirm its register is separate. Invites are email-bound and expire after seven days. To remove access, delete that user’s membership in `public.rill_memberships` and any unused invites for that email in `rill_private.rill_invites` through Supabase SQL Editor.
+Log in with a confirmed email account. Create a workspace and add a zone. Check it from a second browser, then invite another verified account as a viewer and verify it can read the zone. Test an account with a different workspace to confirm its register is separate. Invites are email-bound and expire after seven days. To remove access, delete that user’s membership in `public.rill_memberships` and any unused invites for that email in `rill_private.rill_invites` through Supabase SQL Editor.
 
 ## Deploy the sample site to Azure Static Web Apps
 

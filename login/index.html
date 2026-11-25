@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#133b2f">
   <title>Log in | Rill</title>
-  <meta name="description" content="Sign in to the Rill demo and explore the irrigation workspace.">
+  <meta name="description" content="Log in to Rill to plan irrigation and review zone records.">
   <link rel="canonical" href="https://uniqkode.github.io/rill/login/">
   <link rel="icon" href="../assets/logo.svg?v=f8e3fcb6f4" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/rill.css?v=fc285b6da8">
@@ -64,10 +64,26 @@
       <p class="login-caption">Demo changes are saved in this browser. <a href="../security/">Read about demo access.</a></p>
       <!-- rill-demo-login:end -->
       <div class="login-auth" data-live-login hidden>
-        <p>Use your Google account to open your irrigation workspace.</p>
-        <button class="rill-button" type="button" data-google-login disabled>Continue with Google</button>
         <p class="login-caption" data-live-login-status role="status">Checking your sign-in…</p>
         <p class="login-error" data-live-login-error role="alert" hidden></p>
+        <form id="account-form" method="post" hidden>
+          <fieldset disabled>
+            <legend class="rill-visually-hidden">Account details</legend>
+            <label for="account-email" data-account-email-label>Email address</label>
+            <input type="email" id="account-email" name="email" autocomplete="username" maxlength="254" required>
+            <label class="account-password-label" for="account-password" data-account-password-label>Password</label>
+            <div class="login-password" data-account-password-field>
+              <input type="password" id="account-password" name="password" autocomplete="current-password" required>
+              <button type="button" data-account-password-toggle aria-label="Show password" aria-pressed="false">Show</button>
+            </div>
+            <button class="rill-button" type="submit">Log in</button>
+            <div class="login-auth-links">
+              <button type="button" data-account-mode="signup">Create an account</button>
+              <button type="button" data-account-mode="reset">Forgot password?</button>
+              <button type="button" data-account-mode="signin" hidden>Back to log in</button>
+            </div>
+          </fieldset>
+        </form>
         <div class="rill-actions" data-invite-actions hidden>
           <button type="button" class="rill-button rill-button--outline" data-switch-account>Use another account</button>
           <button type="button" class="rill-button rill-button--outline" data-ignore-invite>Open my workspaces</button>

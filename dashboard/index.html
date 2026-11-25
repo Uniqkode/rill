@@ -224,9 +224,9 @@
           </section>
           <section class="workspace-card" aria-labelledby="invite-heading" data-owner-settings hidden>
             <h3 id="invite-heading">Invite a teammate</h3>
-            <p>Create a link for their Google account. It expires in seven days.</p>
+            <p>Create an invite for their email address. The link expires in seven days.</p>
             <form id="create-invite" class="workspace-settings-form" method="post">
-              <label>Google account email<input name="email" type="email" maxlength="254" required></label>
+              <label>Email address<input name="email" type="email" maxlength="254" required></label>
               <label>Role<select name="role"><option value="operator">Operator · read and edit</option><option value="viewer">Viewer · read only</option></select></label>
               <p id="invite-error" class="workspace-form-error" role="alert" hidden></p>
               <button class="rill-button" type="submit">Create invite link</button>
