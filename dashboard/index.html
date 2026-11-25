@@ -24,7 +24,7 @@
 <main class="workspace-entry rill-shell" data-workspace-setup hidden>
   <section class="workspace-card" aria-labelledby="setup-heading">
     <h1 id="setup-heading">Create a workspace</h1>
-    <p>Give your farm, cooperative, or operations team a workspace for its zone register and irrigation records.</p>
+    <p>Name your workspace to open the dashboard. The Free plan includes read-only access to irrigation records.</p>
     <form id="create-workspace" method="post">
       <label>Workspace name<input name="name" maxlength="100" required autocomplete="organization"></label>
       <p id="create-workspace-error" class="workspace-form-error" role="alert" hidden></p>
@@ -69,6 +69,13 @@
     </header>
     <h1 class="rill-visually-hidden">Rill workspace</h1>
     <div class="workspace-content">
+      <section class="workspace-plan-notice" aria-labelledby="workspace-plan-title" data-plan-notice hidden>
+        <div>
+          <h2 id="workspace-plan-title" data-plan-title>Free plan · Read-only</h2>
+          <p data-plan-copy>View and export your zones. Upgrade to add zones and edit irrigation records.</p>
+        </div>
+        <a class="rill-button rill-button--small" href="../pricing/" data-plan-upgrade>View paid plans</a>
+      </section>
       <section id="panel-overview" class="app-panel" aria-labelledby="overview-heading">
         <header class="workspace-hero">
           <div>
@@ -110,7 +117,7 @@
 
       <section id="panel-records" class="app-panel" aria-labelledby="records-heading" hidden>
         <header class="workspace-panel-head">
-          <div><h2 id="records-heading" class="workspace-panel-title" tabindex="-1">Zone register</h2><p>Review field notes, update watering status and export the current selection.</p></div>
+          <div><h2 id="records-heading" class="workspace-panel-title" tabindex="-1">Zone register</h2><p data-records-intro>Review field notes, update watering status and export the current selection.</p></div>
           <button type="button" class="rill-button add-record"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add zone</button>
         </header>
         <div class="workspace-card workspace-table-card">
@@ -214,6 +221,7 @@
               <div><dt>Workspace</dt><dd data-account-workspace>Riverbend Irrigation</dd></div>
               <div><dt>Email</dt><dd data-account-email>demo@rill.example</dd></div>
               <div><dt>Role</dt><dd data-account-role>Demo Operator</dd></div>
+              <div data-account-plan-row hidden><dt>Plan</dt><dd data-account-plan></dd></div>
             </dl>
             <a class="rill-link" href="../security/" data-demo-only>Read about demo access</a>
           </section>
@@ -227,7 +235,7 @@
             <p>Create an invite for their email address. The link expires in seven days.</p>
             <form id="create-invite" class="workspace-settings-form" method="post">
               <label>Email address<input name="email" type="email" maxlength="254" required></label>
-              <label>Role<select name="role"><option value="operator">Operator · read and edit</option><option value="viewer">Viewer · read only</option></select></label>
+              <label>Role<select name="role"><option value="operator">Operator · edit on paid plans</option><option value="viewer">Viewer · read only</option></select></label>
               <p id="invite-error" class="workspace-form-error" role="alert" hidden></p>
               <button class="rill-button" type="submit">Create invite link</button>
             </form>

@@ -11,6 +11,12 @@ The migrations are already applied to Uniqkode’s Rill database. [Rill in Supab
 3. Enable the Email provider, account creation and **Confirm email**. Keep Google disabled. Email confirmation preserves the ownership check for workspace invites. [Rill Auth providers](https://supabase.com/dashboard/project/keuywmomjslltntmzjbi/auth/providers)
 4. Set the Auth Site URL to the Cloudflare Pages URL and add its exact `/login/` URL to the redirect allow list. Add `http://127.0.0.1:4173/login/` to the list for local testing. Users open confirmation and reset links in the browser that requested them. [Redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls)
 
+## Workspace plans
+
+Workspaces start on the Free plan. Members can view, filter and export zone records. Adding and editing zones requires a paid workspace plan and an owner or operator role. Plan selection links to the contact form.
+
+After confirming an upgrade, set the workspace row’s `plan` in `public.rill_workspaces` to `starter`, `growth` or `enterprise` as a Supabase administrator. Set it to `free` to switch zone records back to read-only access. Members refresh the dashboard to see the new plan. [Rill Table Editor](https://supabase.com/dashboard/project/keuywmomjslltntmzjbi/editor)
+
 ## Resend SMTP
 
 Verify a sending domain you own by adding the DNS records Resend provides. The GitHub Pages and Cloudflare Pages addresses are website hostnames. Supabase's built-in email service delivers to members of the Supabase project team. [Resend domain verification](https://resend.com/docs/dashboard/domains/introduction) · [Supabase SMTP](https://supabase.com/docs/guides/auth/auth-smtp)
@@ -50,7 +56,7 @@ python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 
 Run the workspace permission check in a test project after applying the migrations. It uses temporary test accounts and rolls back its changes. [Permission check](../supabase/tests/workspace.sql)
 
-Log in with a confirmed email account. Create a workspace and add a zone. Check it from a second browser, then invite another verified account as a viewer and verify it can read the zone. Test an account with a different workspace to confirm its register is separate. Invites are email-bound and expire after seven days. To remove access, delete that user’s membership in `public.rill_memberships` and any unused invites for that email in `rill_private.rill_invites` through Supabase SQL Editor.
+Log in with a confirmed email account and create a free workspace. Check that the dashboard opens with a plan notice. Assign a paid plan to the test workspace and refresh before adding a zone. Invite another verified account as a viewer and confirm it can read the zone. Test an account in a different workspace to confirm its register is separate. Invites are email-bound and expire after seven days. To remove access, delete that user’s membership in `public.rill_memberships` and any unused invites for that email in `rill_private.rill_invites` through Supabase SQL Editor.
 
 ## Deploy the sample site to Azure Static Web Apps
 

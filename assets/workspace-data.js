@@ -47,7 +47,7 @@
     },
     async workspaces(userId) {
       const memberships = result(await client.from('rill_memberships')
-        .select('role,rill_workspaces(id,name)').eq('user_id', userId));
+        .select('role,rill_workspaces(id,name,plan)').eq('user_id', userId));
       return memberships.filter(row => row.rill_workspaces)
         .map(row => ({ ...row.rill_workspaces, role: row.role }))
         .sort((left, right) => left.name.localeCompare(right.name));

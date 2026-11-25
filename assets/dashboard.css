@@ -92,6 +92,20 @@
 #app-menu { display: none; }
 .workspace-icon-button { display: grid; }
 .workspace-content { width: min(1360px, calc(100% - clamp(1.6rem, 5vw, 4rem))); margin-inline: auto; padding-block: 1.45rem 2rem; }
+.workspace-plan-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+  margin-bottom: 1rem;
+  padding: .9rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  background: var(--sage-wash);
+}
+.workspace-plan-notice h2 { font-size: 1.05rem; }
+.workspace-plan-notice p { margin-top: .28rem; color: var(--muted); font-size: .88rem; }
 .app-panel { display: grid; gap: 1rem; }
 .workspace-hero {
   position: relative;

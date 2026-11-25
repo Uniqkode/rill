@@ -24,6 +24,24 @@ begin
   perform set_config('request.jwt.claim.sub', owner_id::text, true);
   perform public.rill_create_workspace(workspace_id, 'Test irrigation workspace');
   perform public.rill_create_workspace(workspace_id, 'Test irrigation workspace');
+  if (select plan from public.rill_workspaces where id = workspace_id) is distinct from 'free' then
+    raise exception 'A new workspace does not start on the free plan.';
+  end if;
+  begin
+    update public.rill_workspaces set plan = 'starter' where id = workspace_id;
+    raise exception 'A workspace owner can assign their own paid plan.';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.rill_zones (id, workspace_id, name, place, value, owner, note)
+    values (own_zone, workspace_id, 'Free zone', 'Test farm', 120, 'Operator', 'Free owner insert.');
+    raise exception 'A free owner can add a zone.';
+  exception when insufficient_privilege then null;
+  end;
+
+  execute 'reset role';
+  update public.rill_workspaces set plan = 'starter' where id = workspace_id;
+  execute 'set local role authenticated';
   insert into public.rill_zones (id, workspace_id, name, place, value, owner, note)
   values (own_zone, workspace_id, 'Zone 1', 'Test farm', 120, 'Operator', 'Verify the allocation.');
   viewer_invite := public.rill_create_invite(workspace_id, viewer_email, 'viewer');
@@ -71,6 +89,23 @@ begin
     or not exists (select 1 from public.rill_events where zone_id = own_zone and actor_id = operator_id and status = 'Needs review') then
     raise exception 'Zone changes are missing their server-generated activity.';
   end if;
+
+  execute 'reset role';
+  update public.rill_workspaces set plan = 'free' where id = workspace_id;
+  execute 'set local role authenticated';
+  if not exists (select 1 from public.rill_zones where id = own_zone and value = 140)
+    or (select count(*) from public.rill_events where zone_id = own_zone) <> 2 then
+    raise exception 'A free workspace cannot read its existing zones and activity.';
+  end if;
+  update public.rill_zones set note = 'Free operator update' where id = own_zone and revision = 2;
+  get diagnostics changes = row_count;
+  if changes <> 0 then raise exception 'A free operator can edit a zone.'; end if;
+  begin
+    insert into public.rill_zones (workspace_id, name, place, value, owner, note)
+    values (workspace_id, 'Free zone', 'Test farm', 100, 'Operator', 'Free operator insert.');
+    raise exception 'A free operator can add a zone.';
+  exception when insufficient_privilege then null;
+  end;
 
   execute 'reset role';
   execute 'set local role anon';

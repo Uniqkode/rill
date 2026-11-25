@@ -325,7 +325,7 @@
       const [records, events] = await Promise.all([backend.zones(workspace.id), backend.events(workspace.id)]);
       if (ended) return;
       configureDashboard(user, workspaces, workspace);
-      start({ backend, workspace, records, events });
+      start({ backend, workspace, records, events, userId: user.id });
       boot.hidden = true;
     } catch {
       status.textContent = 'Rill could not load the workspace. Reload this page to try again.';

@@ -122,7 +122,9 @@
 
  function startDashboard(context=null) {
   const live=Boolean(context);
-  const canEdit=!context||context.workspace.role!=='viewer';
+  let canEdit=!live;
+  let workspace=context?.workspace;
+  const planNames=new Map([['free','Free'],['starter','Starter'],['growth','Growth'],['enterprise','Enterprise']]);
   const workspaceId=context?.workspace.id;
   const backend=context?.backend;
   const fixture=()=>config.records.map(row=>({id:row[0],name:row[1],place:row[2],value:row[3],score:row[4],status:row[5],owner:row[6],note:row[7]}));
@@ -146,7 +148,28 @@
    $('[data-live-refresh]').hidden=false;
    $('#save-note').textContent='Save changes';
    $('#reopen-record').textContent='Queue for review';
+   showWorkspaceAccess();
+  }
+  function showWorkspaceAccess() {
+   const planName=planNames.get(workspace.plan)||'Free';
+   const editingRole=workspace.role==='owner'||workspace.role==='operator';
+   canEdit=editingRole&&planName!=='Free';
+   $('[data-account-plan]').textContent=planName;
+   $('[data-account-plan-row]').hidden=false;
+   $('[data-plan-notice]').hidden=canEdit;
+   $('[data-plan-title]').textContent=planName+' plan · Read-only';
+   const upgrade=$('[data-plan-upgrade]');
+   upgrade.hidden=workspace.role!=='owner';
+   $('[data-plan-copy]').textContent=editingRole
+    ? (workspace.role==='owner'
+      ? 'View and export your zones. Upgrade to add zones and edit irrigation records.'
+      : 'View and export zones. Ask your workspace owner about a paid plan for editing.')
+    : 'Your viewer role can view and export irrigation records.';
+   $('[data-records-intro]').textContent=canEdit
+    ? 'Review field notes, update watering status and export the current selection.'
+    : 'Review field notes, filter zones and export the current selection.';
    $$('.add-record').forEach(button=>{button.hidden=!canEdit;});
+   if(!canEdit&&$('#add-dialog').open)$('#add-dialog').close();
   }
   function persist(){write('localStorage','records',records);render();}
   function addActivity(record,action) {
@@ -326,8 +349,20 @@
    $('#record-dialog').showModal();
   }
   async function loadWorkspacePlan() {
-   [records,workspaceEvents]=await Promise.all([backend.zones(workspaceId),backend.events(workspaceId)]);
+   const [newRecords,newEvents,workspaces]=await Promise.all([
+    backend.zones(workspaceId),backend.events(workspaceId),backend.workspaces(context.userId)
+   ]);
+   const currentWorkspace=workspaces.find(item=>item.id===workspaceId);
+   if(!currentWorkspace||currentWorkspace.role!==workspace.role){
+    window.location.reload();
+    return false;
+   }
+   workspace=currentWorkspace;
+   records=newRecords;
+   workspaceEvents=newEvents;
+   showWorkspaceAccess();
    render();
+   return true;
   }
   async function refreshActivity(message) {
    try {workspaceEvents=await backend.events(workspaceId);renderActivity();notify(message);}
@@ -348,8 +383,9 @@
     const saved=await backend.updateZone(workspaceId,activeRecord,changes);
     if(!saved){
      $('#record-dialog').close();
-     await loadWorkspacePlan();
-     notify('A newer version is available. Open the zone again to review it.');
+     if(await loadWorkspacePlan()){
+      notify(canEdit?'A newer version is available. Open the zone again to review it.':'This workspace is read-only.');
+     }
      return;
     }
     records=records.map(record=>record.id===saved.id?saved:record);
@@ -364,7 +400,7 @@
   $('[data-live-refresh]').addEventListener('click',async()=>{
    if(saving||!live)return;
    saving=true;
-   try{await loadWorkspacePlan();notify('Workspace plan refreshed.');}
+   try{if(await loadWorkspacePlan())notify('Workspace plan refreshed.');}
    catch{notify('Could not refresh the workspace plan. Try again.');}
    finally{saving=false;}
   });
@@ -411,7 +447,15 @@
      showAddedZone();
      render();
      await refreshActivity('Zone added.');
-    }catch{notify('Could not add the zone. Your entries are ready to retry.');}
+    }catch(error){
+     if(error?.code==='42501'){
+      try{
+       if(!await loadWorkspacePlan())return;
+       if(!canEdit){notify('This workspace is read-only.');return;}
+      }catch{/* Keep the form values available if the refresh also fails. */}
+     }
+     notify('Could not add the zone. Your entries are ready to retry.');
+    }
     finally{saving=false;}
     return;
    }
