@@ -1,11 +1,15 @@
-/** Optional AI adapter. Public GitHub Pages files contain no provider credentials. */
+/** Irrigation inference and the optional evidence-review adapter. */
 import http from 'node:http';
 import {createHash,timingSafeEqual} from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
+import {forecastIrrigation,validateDemandModel} from '../assets/irrigation-forecast.js';
+import {irrigationModel} from '../assets/irrigation-model.js';
 import {aiBriefs} from './product-definition.mjs';
 import {resolveProviderConfiguration} from './provider-config.mjs';
 
 const MAX_BODY=12*1024*1024;
+const MAX_FORECAST_BODY=256*1024;
 const schema={type:'object',additionalProperties:false,properties:{title:{type:'string'},summary:{type:'string'},findings:{type:'array',minItems:1,maxItems:8,items:{type:'object',additionalProperties:false,properties:{title:{type:'string'},level:{type:'string',enum:['Review','Routine','Uncertain']},source:{type:'string'},quote:{type:'string'},action:{type:'string'}},required:['title','level','source','quote','action']}}},required:['title','summary','findings']};
 const normal=value=>String(value).replace(/\s+/g,' ').trim().toLowerCase();
 function secureEqual(a,b){const left=Buffer.from(a),right=Buffer.from(b);return left.length===right.length&&timingSafeEqual(left,right);}
@@ -71,6 +75,10 @@ export function createAIService(options={}){
  const providerConfig=resolveProviderConfiguration(providerEnv);
  const key=providerName==='azure'?providerEnv.AZURE_OPENAI_API_KEY:providerEnv.OPENAI_API_KEY;
  const model=providerConfig.model;
+ const forecastModelPath=process.env.RILL_FORECAST_MODEL_PATH;
+ const forecastModel=validateDemandModel(options.forecastModel??(forecastModelPath
+  ?JSON.parse(readFileSync(forecastModelPath,'utf8'))
+  :irrigationModel));
  const accessToken=options.accessToken??process.env.AI_SERVICE_TOKEN??'';
  const origins=new Set(options.origins??String(process.env.AI_ALLOWED_ORIGINS||'http://localhost:3000,http://localhost:4173,https://uniqkode.github.io').split(',').map(x=>x.trim()).filter(Boolean));
  const provider=options.provider??callProvider;
@@ -81,20 +89,31 @@ export function createAIService(options={}){
   const send=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...cors});res.end(JSON.stringify(data));};
   if(origin&&!origins.has(origin)){send(403,{error:'This website origin is not allowed by the AI service.'});return;}
   if(req.method==='OPTIONS'){res.writeHead(204,{...cors,'Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type,Authorization','Access-Control-Max-Age':'600'});res.end();return;}
-  if(req.method==='GET'&&req.url==='/api/health'){send(200,{configured:providerConfig.configured,provider:providerConfig.provider,authenticationRequired:!!accessToken,mode:providerConfig.configured?'configured':'unconfigured'});return;}
-  if(req.method!=='POST'||req.url!=='/api/analyze'){send(404,{error:'Endpoint not found.'});return;}
+  if(req.method==='GET'&&req.url==='/api/health'){
+   send(200,{configured:providerConfig.configured,provider:providerConfig.provider,authenticationRequired:!!accessToken,
+    mode:providerConfig.configured?'configured':'unconfigured',forecast:{version:forecastModel.version,trainingSource:forecastModel.trainingSource}});
+   return;
+  }
+  const isForecast=req.url==='/api/forecast';
+  if(req.method!=='POST'||(!isForecast&&req.url!=='/api/analyze')){send(404,{error:'Endpoint not found.'});return;}
   if(accessToken&&!secureEqual(req.headers.authorization||'','Bearer '+accessToken)){send(401,{error:'The service access token is missing or invalid.'});return;}
-  if(!providerConfig.configured){send(503,{error:'The server AI endpoint, deployment name or credentials are not fully configured.'});return;}
-  if(!String(req.headers['content-type']||'').toLowerCase().startsWith('application/json')){send(415,{error:'Send the evidence as JSON.'});return;}
+  if(!isForecast&&!providerConfig.configured){send(503,{error:'The server AI endpoint, deployment name or credentials are not fully configured.'});return;}
+  if(!String(req.headers['content-type']||'').toLowerCase().startsWith('application/json')){send(415,{error:isForecast?'Send the forecast inputs as JSON.':'Send the evidence as JSON.'});return;}
   const peer=req.socket.remoteAddress||'local',now=Date.now();
   const recent=(rate.get(peer)||[]).filter(time=>now-time<60000);
-  if(recent.length>=12){send(429,{error:'The service allows 12 analysis requests per minute per connection.'});return;}
+  if(recent.length>=12){send(429,{error:'The service allows 12 requests per minute per connection.'});return;}
   rate.set(peer,[...recent,now]);
   if(rate.size>500)for(const [id,times] of rate)if(!times.some(time=>now-time<60000))rate.delete(id);
   const chunks=[];try{
+   const maxBody=isForecast?MAX_FORECAST_BODY:MAX_BODY;
    let bytes=0;
-   for await(const chunk of req){bytes+=chunk.length;if(bytes>MAX_BODY){send(413,{error:'The evidence request is too large.'});return;}chunks.push(chunk);}
+   for await(const chunk of req){bytes+=chunk.length;if(bytes>maxBody){send(413,{error:'The request is too large.'});return;}chunks.push(chunk);}
    let parsed;try{parsed=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{send(400,{error:'The request is not valid JSON.'});return;}
+   if(isForecast){
+    try{send(200,{...forecastIrrigation(parsed,forecastModel),generatedAt:new Date().toISOString()});}
+    catch(error){if(!(error instanceof RangeError))throw error;send(400,{error:error.message});}
+    return;
+   }
    let input;try{input=validateInputs(parsed);}catch(error){send(400,{error:error.message});return;}
    const hash=createHash('sha256').update(JSON.stringify({version:2,provider:providerConfig.provider,endpoint:providerConfig.url,model,...input})).digest('hex');
    const previous=cache.get(hash);
@@ -113,5 +132,5 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  if(!['127.0.0.1','localhost','::1'].includes(host)&&String(process.env.AI_SERVICE_TOKEN||'').length<24)throw new Error('Configure AI_SERVICE_TOKEN with at least 24 characters before exposing this service outside localhost.');
  const port=Number(process.env.AI_PORT||8787);
  const state=resolveProviderConfiguration();
- createAIService().listen(port,host,()=>console.log(`AI adapter listening at http://${host}:${port}. Provider: ${state.provider}. Configuration: ${state.configured?'ready':'not configured'}.`));
+ createAIService().listen(port,host,()=>console.log(`Irrigation forecast API listening at http://${host}:${port}. Evidence review provider: ${state.provider} (${state.configured?'ready':'not configured'}).`));
 }

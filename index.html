@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#133b2f">
-  <title>Zone-by-zone irrigation planning | Rill</title>
-  <meta name="description" content="Turn soil readings, weather and crop stage into a daily irrigation plan for commercial farms and cooperatives.">
-  <meta property="og:title" content="Zone-by-zone irrigation planning | Rill">
-  <meta property="og:description" content="Turn soil readings, weather and crop stage into a daily irrigation plan for commercial farms and cooperatives.">
+  <title>AI irrigation planning for commercial farms | Rill</title>
+  <meta name="description" content="Forecast zone water demand and plan around shared pumps with Rill, the AI irrigation planner for commercial farms and cooperatives.">
+  <meta property="og:title" content="AI irrigation planning for commercial farms | Rill">
+  <meta property="og:description" content="Forecast zone water demand and plan around shared pumps with Rill, the AI irrigation planner for commercial farms and cooperatives.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://uniqkode.github.io/rill/">
   <link rel="canonical" href="https://uniqkode.github.io/rill/">
@@ -36,12 +36,12 @@
 <section class="rill-hero">
   <div class="rill-shell rill-hero-inner">
     <div class="rill-hero-copy">
-      <span class="rill-eyebrow">Irrigation planning software</span>
+      <span class="rill-eyebrow">AI irrigation planning</span>
       <h1>Know where <span>to water next.</span></h1>
-      <p>Turn soil readings, weather forecasts and crop stages into a daily water plan your team can review zone by zone.</p>
+      <p>Forecast how much water each zone needs over the next 24 hours. Give commercial farms and cooperatives a daily plan their irrigation teams can review.</p>
       <div class="rill-actions">
         <a class="rill-button rill-button--bright" href="./contact/">Book a live demo</a>
-        <a class="rill-button rill-button--outline" href="#try-analysis">See how it works</a>
+        <a class="rill-button rill-button--outline" href="./Technology/#forecast">Try the AI forecast</a>
       </div>
     </div>
     <div class="field-explorer" data-field-explorer>
@@ -152,14 +152,14 @@
     <header class="rill-head">
   <span class="rill-eyebrow">Forecast architecture</span>
   <h2>Start with the field. Explain the forecast.</h2>
-  <p>Rill’s model design estimates zone demand from soil, weather and crop data. Allocation rules then compare demand with water and pump capacity.</p>
+  <p>A trained model predicts each zone’s water demand from soil moisture, crop stage and the weather outlook. Your team can then review how shared supply and pump constraints change the plan.</p>
 </header>
-    <a class="rill-link" href="./Technology/">Explore the Azure architecture</a>
+    <a class="rill-link" href="./Technology/#model">See how the AI forecast works</a>
   </div>
   <ol class="rill-tech-chain">
-    <li><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18M7 6v2m6 4v2m4 4v2M5 18v2"/></svg></span><div><strong>Data in</strong><span>Soil trends, weather forecasts, crop stage and meter readings</span></div></li>
-    <li><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01M12 7.5h4M12 16.5h4"/></svg></span><div><strong>Forecast and allocation</strong><span>Zone-level regression, time-based evaluation and pump constraints</span></div></li>
-    <li><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v16h14V5h-4M8 10h8m-8 4h5"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span><div><strong>Data out</strong><span>Water demand, review flags, and a plan with source references</span></div></li>
+    <li><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18M7 6v2m6 4v2m4 4v2M5 18v2"/></svg></span><div><strong>Data in</strong><span>Soil moisture, crop stage and 24-hour weather forecasts</span></div></li>
+    <li><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5h.01M8 16.5h.01M12 7.5h4M12 16.5h4"/></svg></span><div><strong>Forecast and allocation</strong><span>Machine-learning demand estimates and shared pump limits</span></div></li>
+    <li><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v16h14V5h-4M8 10h8m-8 4h5"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span><div><strong>Data out</strong><span>Ranked watering volumes, shortfalls and review flags</span></div></li>
   </ol>
 </div>
   </div>

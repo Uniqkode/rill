@@ -4,15 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#133b2f">
-  <title>Irrigation forecasting technology | Rill</title>
-  <meta name="description" content="See the Rill field-data pipeline, Azure service plan, forecast model design and interactive workload calculator.">
-  <meta property="og:title" content="Irrigation forecasting technology | Rill">
-  <meta property="og:description" content="See the Rill field-data pipeline, Azure service plan, forecast model design and interactive workload calculator.">
+  <title>AI irrigation forecasting technology | Rill</title>
+  <meta name="description" content="Run Rill's irrigation demand model on editable zone readings and see how shared pump and water limits shape the daily plan.">
+  <meta property="og:title" content="AI irrigation forecasting technology | Rill">
+  <meta property="og:description" content="Run Rill's irrigation demand model on editable zone readings and see how shared pump and water limits shape the daily plan.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://uniqkode.github.io/rill/Technology/">
   <link rel="canonical" href="https://uniqkode.github.io/rill/Technology/">
   <link rel="icon" type="image/svg+xml" href="../assets/logo.svg?v=f8e3fcb6f4">
   <link rel="stylesheet" href="../assets/rill.css?v=fc285b6da8">
+  <link rel="stylesheet" href="../assets/forecast.css">
 </head>
 <body class="rill-site rill-modern" data-brand="rill" data-base="../" data-page="technology">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -35,30 +36,50 @@
 <section class="rill-route-hero">
   <div class="rill-shell">
     <div class="rill-route-intro">
-      <span class="rill-eyebrow">Technology</span>
-      <h1>Forecast zone demand from field conditions.</h1>
-      <p>Soil readings, weather forecasts, crop stage and the last watering cycle feed a zone-level estimate. An allocation step applies pump and water limits before the operator reviews it.</p>
-      <div class="rill-actions"><a class="rill-button" href="../solution/">Explore the workflow</a><a class="rill-button rill-button--outline" href="../security/">View security controls</a></div>
+      <span class="rill-eyebrow">AI irrigation technology</span>
+      <h1>Predict demand. Plan around a shared pump.</h1>
+      <p>Rill’s machine-learning model estimates what each zone needs over the next 24 hours. Commercial farms and cooperatives can see which zones to review first and how much water their pump can deliver.</p>
+      <div class="rill-actions"><a class="rill-button" href="#forecast">Run the AI forecast</a><a class="rill-button rill-button--outline" href="#model">Inspect the model</a></div>
     </div>
   </div>
-</section><section class="rill-section">
+</section>
+<section class="rill-section rill-section--muted" id="forecast" aria-labelledby="forecast-heading">
+  <div class="rill-shell">
+    <header class="rill-head">
+      <h2 id="forecast-heading">Build a 24-hour zone plan.</h2>
+      <p>Try the prefilled farm or enter your own readings. Change the expected rain or pump window and rerun to see the effect on the plan.</p>
+    </header>
+    <rill-forecast-planner sample><p>Enable JavaScript to run the irrigation forecast in your browser.</p></rill-forecast-planner>
+  </div>
+</section>
+<section class="rill-section" id="model">
   <div class="rill-shell">
 <header class="rill-head">
-  <span class="rill-eyebrow">Forecast pipeline</span>
-  <h2>From sensor readings to a decision brief.</h2>
-  <p>The production forecast design separates estimation, resource allocation and explanation.</p>
+  <span class="rill-eyebrow">How the model works</span>
+  <h2>Every forecast shows what drove it.</h2>
+  <p>The browser runs constrained ridge regression against the entered soil deficit, crop stage, evapotranspiration and effective rainfall. The planner shows how much each input contributed to predicted depth.</p>
 </header><div class="rill-grid-3">
-  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18M7 6v2m6 4v2m4 4v2M5 18v2"/></svg></span><h3>Field signals</h3><p>Normalize timestamped moisture and flow readings. Flag stale or missing inputs for the operator.</p></article>
-  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v17h18M7 15l4-5 4 2 5-6"/><path d="M17 6h3v3"/></svg></span><h3>Demand and constraints</h3><p>Evaluate a gradient-boosted, zone-level baseline on later operating periods. Apply pump capacity, available water and zone priority.</p></article>
-  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v16h14V5h-4M8 10h8m-8 4h5"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span><h3>Cited explanation</h3><p>Summarize how the input and the operating limit affect the plan. Save the review brief with the source record.</p></article>
+  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18M7 6v2m6 4v2m4 4v2M5 18v2"/></svg></span><h3>Screen field readings</h3><p>Convert volumetric moisture and root depth into a root-zone deficit. Readings older than 24 hours and inputs outside the training range need operator review before a forecast is issued.</p></article>
+  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v17h18M7 15l4-5 4 2 5-6"/><path d="M17 6h3v3"/></svg></span><h3>Estimate zone demand</h3><p>The model learns how soil deficit, crop-stage water use and rainfall affect net depth. Zone area and application efficiency convert that depth into the volume the pump would need to deliver.</p></article>
+  <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H5v16h14V5h-4M8 10h8m-8 4h5"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span><h3>Allocate available water</h3><p>Suggested volumes go to higher-demand zones first by predicted depth. The plan caps total delivery at the available water or pump flow × hours, whichever is lower.</p></article>
 </div>
+    <div class="rill-card forecast-evaluation">
+      <div>
+        <h3>Model evaluation</h3>
+        <p>The training set contains <strong data-forecast-model="training">1,536</strong> simulated zone observations. The holdout contains <strong data-forecast-model="holdout">384</strong> observations from later dates in the simulation. Field performance requires a farm pilot.</p>
+      </div>
+      <dl class="rill-metrics">
+        <div><dt>Model mean absolute error</dt><dd><span data-forecast-model="error">—</span> mm</dd></div>
+        <div><dt>Water-balance baseline error</dt><dd><span data-forecast-model="baseline">—</span> mm</dd></div>
+      </dl>
+    </div>
   </div>
 </section><section class="rill-section rill-section--muted">
   <div class="rill-shell">
 <header class="rill-head">
   <span class="rill-eyebrow">Azure architecture</span>
-  <h2>Infrastructure built for agriculture workloads.</h2>
-  <p>The included adapter supports the explanation step. The deployment plan shows where telemetry, customer storage, model training and operating controls fit.</p>
+  <h2>Azure deployment architecture.</h2>
+  <p>The forecast runs in the browser and through a Node API in the repository. Azure is the proposed deployment path for sensor ingestion, field-trained batch forecasts and organization controls.</p>
 </header><div class="rill-table-wrap" tabindex="0" role="region" aria-label="Azure infrastructure and delivery status">
   <table class="rill-table rill-architecture-table">
     <thead><tr><th scope="col">Workload</th><th scope="col">Azure service and role</th><th scope="col">Delivery status</th></tr></thead>
@@ -67,8 +88,8 @@
       <tr><th scope="row">Field telemetry</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/iot-hub/iot-concepts-and-iot-hub">Azure IoT Hub</a><br>Ingest authenticated moisture readings and flow-meter observations. Route readings to forecast jobs by site and zone.</td><td><span class="rill-chip rill-chip--sage">Planned</span></td></tr>
       <tr><th scope="row">Document intake</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/ai-services/document-intelligence/overview?view=doc-intel-4.0.0">Azure Document Intelligence</a><br>Extract fields and tables from scanned irrigation logs and pump reports. Keep the original alongside the extracted values.</td><td><span class="rill-chip rill-chip--sage">Planned</span></td></tr>
       <tr><th scope="row">Evidence storage</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption">Azure Blob Storage</a><br>Store source versions and reports in tenant-scoped containers. Require encryption at rest and in transit with a customer-managed key option where supported.</td><td><span class="rill-chip rill-chip--sage">Planned</span></td></tr>
-      <tr><th scope="row">Forecast and queue</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-batch-endpoints">Azure Machine Learning</a><br>Train and evaluate a zone-level baseline. Batch forecast jobs over updated observations and use a queue for retries.</td><td><span class="rill-chip rill-chip--sage">Planned</span></td></tr>
-      <tr><th scope="row">Decision brief</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses">Azure OpenAI in Microsoft Foundry</a><br>Draft a source-linked explanation of the readings and operating limits. The server adapter validates references and text quotes.</td><td><span class="rill-chip rill-chip--ready">Adapter implemented</span></td></tr>
+      <tr><th scope="row">Forecast training and batch jobs</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-batch-endpoints">Azure Machine Learning</a><br>Train on approved field histories, evaluate across later operating periods and run recurring forecasts on updated observations.</td><td><span class="rill-chip rill-chip--sage">Azure integration planned</span></td></tr>
+      <tr><th scope="row">Evidence review</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses">Azure OpenAI in Microsoft Foundry</a><br>Draft source-linked findings from operator notes or photos. The optional server adapter validates references and text quotes.</td><td><span class="rill-chip rill-chip--ready">Adapter implemented</span></td></tr>
       <tr><th scope="row">Inference compute</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/aks/use-nvidia-gpu">Azure Kubernetes Service</a><br>Evaluate autoscaled node pools and GPU inference if a validated model needs them during forecast bursts. Start with managed CPU batch jobs.</td><td><span class="rill-chip rill-chip--sage">Scale option</span></td></tr>
       <tr><th scope="row">Identity</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview">Microsoft Entra ID</a><br>Enforce organization membership and operator roles. Use managed identities to reduce service credentials.</td><td><span class="rill-chip rill-chip--sage">Planned</span></td></tr>
       <tr><th scope="row">Secrets</th><td><a class="rill-link" href="https://learn.microsoft.com/en-us/azure/key-vault/general/overview">Azure Key Vault</a><br>Store provider credentials, certificates and connection strings server-side.</td><td><span class="rill-chip rill-chip--sage">Planned</span></td></tr>
@@ -106,7 +127,7 @@
 </section><section class="rill-section rill-section--muted">
   <div class="rill-shell">
 <header class="rill-head">
-  <span class="rill-eyebrow">Model evaluation</span>
+  <span class="rill-eyebrow">Field validation</span>
   <h2>Validate the forecast before expanding coverage.</h2>
 </header><div class="rill-grid-3">
   <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v17h18M7 15l4-5 4 2 5-6"/><path d="M17 6h3v3"/></svg></span><h3>Time-based validation</h3><p>Evaluate forecast error on later watering cycles and report the error by crop, site and weather window.</p></article>
@@ -176,5 +197,6 @@
 <script defer src="../assets/config.js?v=af950c991d"></script>
 <script defer src="../assets/app.js?v=e095bf60be"></script>
 <script defer src="../assets/site.js?v=290415e087"></script>
+<script type="module" src="../assets/forecast-planner.js"></script>
 </body>
 </html>

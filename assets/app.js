@@ -133,6 +133,10 @@
   const statuses=['Needs review','Scheduled',config.finalStatus];
   let records=live?context.records:
     Array.isArray(saved)&&saved.length<2000&&saved.every(r=>r&&typeof r.id==='string'&&typeof r.name==='string'&&typeof r.place==='string'&&typeof r.owner==='string'&&typeof r.note==='string'&&Number.isFinite(r.value)&&r.value>=0&&Number.isFinite(r.score)&&r.score>=0&&r.score<=100&&statuses.includes(r.status))?saved:fixture();
+  const forecastPlanner=$('rill-forecast-planner');
+  function syncForecastZones() {
+   customElements.whenDefined('rill-forecast-planner').then(()=>{forecastPlanner.workspaceZones=records;});
+  }
   let workspaceEvents=context?.events||[];
   const statusTone={'Needs review':'review',Scheduled:'scheduled',[config.finalStatus]:'watered'};
   let activeRecord=null;
@@ -171,7 +175,7 @@
    $$('.add-record').forEach(button=>{button.hidden=!canEdit;});
    if(!canEdit&&$('#add-dialog').open)$('#add-dialog').close();
   }
-  function persist(){write('localStorage','records',records);render();}
+  function persist(){write('localStorage','records',records);syncForecastZones();render();}
   function addActivity(record,action) {
    const history=Array.isArray(record.activity)?record.activity:[];
    record.activity=[{at:new Date().toISOString(),action},...history].slice(0,25);
@@ -359,6 +363,7 @@
    }
    workspace=currentWorkspace;
    records=newRecords;
+   syncForecastZones();
    workspaceEvents=newEvents;
    showWorkspaceAccess();
    render();
@@ -389,6 +394,7 @@
      return;
     }
     records=records.map(record=>record.id===saved.id?saved:record);
+    syncForecastZones();
     activeRecord=saved;
     if(close)$('#record-dialog').close();
     else fillRecord(saved);
@@ -443,6 +449,7 @@
     try {
      const saved=await backend.createZone(workspaceId,{...zone,id:addRequestId});
      records=[saved,...records.filter(record=>record.id!==saved.id)];
+     syncForecastZones();
      addRequestId=null;
      showAddedZone();
      render();
@@ -483,6 +490,7 @@
    }catch{notify('Could not sign out. Try again.');button.disabled=false;}
   });
   for(const dialog of $$('dialog'))dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});
+  syncForecastZones();
   render();
   activateTab(window.location.hash.slice(1)||'overview',false);
   $('[data-dashboard-shell]').hidden=false;

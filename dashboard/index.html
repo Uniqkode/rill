@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../assets/rill.css?v=fc285b6da8">
   <link rel="stylesheet" href="../assets/product.css">
   <link rel="stylesheet" href="../assets/dashboard.css?v=f676443fdd">
+  <link rel="stylesheet" href="../assets/forecast.css">
 </head>
 <body class="rill-site rill-dashboard" data-brand="rill" data-base="../" data-page="dashboard" data-workspace-mode="demo">
 <a class="skip-link" href="#main">Skip to workspace</a>
@@ -43,7 +44,7 @@
     <nav aria-label="Workspace navigation">
       <button type="button" class="app-tab active" data-tab="overview" aria-controls="panel-overview" aria-pressed="true"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Overview</span></button>
       <button type="button" class="app-tab" data-tab="records" aria-controls="panel-records" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3V6Zm6-3v15m6-12v15"/></svg><span>Zones</span></button>
-      <button type="button" class="app-tab" data-tab="forecast" data-demo-only aria-controls="panel-forecast" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 18a3.6 3.6 0 1 0-1.1-7 6 6 0 0 0-11.5-1.3A4.2 4.2 0 0 0 7 18h12.4ZM8 21h4m4 0h2"/></svg><span>Forecast review</span></button>
+      <button type="button" class="app-tab" data-tab="forecast" aria-controls="panel-forecast" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.4 18a3.6 3.6 0 1 0-1.1-7 6 6 0 0 0-11.5-1.3A4.2 4.2 0 0 0 7 18h12.4ZM8 21h4m4 0h2"/></svg><span>AI forecast</span></button>
       <button type="button" class="app-tab" data-tab="reports" aria-controls="panel-reports" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Zm8 0v5h4M9 12h6m-6 4h6"/></svg><span>Reports</span></button>
       <button type="button" class="app-tab" data-tab="settings" aria-controls="panel-settings" aria-pressed="false"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16M8 5v4m8 1v4m-6 1v4"/></svg><span>Settings</span></button>
     </nav>
@@ -84,7 +85,7 @@
             <p>See where water is allocated and which zones need a decision.</p>
           </div>
           <div class="workspace-actions">
-            <button class="rill-button rill-button--bright" type="button" data-open-tab="forecast" data-demo-only>Review forecast</button>
+            <button class="rill-button rill-button--bright" type="button" data-open-tab="forecast">Plan irrigation</button>
             <button type="button" class="rill-button workspace-ghost" data-live-refresh hidden>Refresh plan</button>
             <button class="rill-button workspace-ghost add-record" type="button"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add zone</button>
           </div>
@@ -132,13 +133,15 @@
         </div>
       </section>
 
-      <section id="panel-forecast" class="app-panel" aria-labelledby="forecast-heading" data-demo-only hidden>
+      <section id="panel-forecast" class="app-panel" aria-labelledby="forecast-heading" hidden>
         <header class="workspace-panel-head">
-          <div><h2 id="forecast-heading" class="workspace-panel-title" tabindex="-1">Forecast review</h2><p>Compare the sample forecasts with their source observations and keep a report for operator review.</p></div>
+          <div><h2 id="forecast-heading" class="workspace-panel-title" tabindex="-1">AI irrigation forecast</h2><p>Select zones that share a pump and enter their latest field readings for a 24-hour watering plan.</p></div>
+          <a class="rill-link" href="../Technology/#forecast">Try a sample forecast</a>
         </header>
-        <div class="ai-workbench ai-workbench--compact" data-ai-workbench>
+        <rill-forecast-planner><p>Enable JavaScript to run the irrigation forecast in your browser.</p></rill-forecast-planner>
+        <div class="ai-workbench ai-workbench--compact" data-ai-workbench data-demo-only>
           <header class="ai-workbench-toolbar">
-            <h3>Prepared forecasts</h3>
+            <h3>Prepared evidence review</h3>
           </header>
           <div class="ai-case-bar">
             <label>Choose a case
@@ -306,5 +309,6 @@
 <script src="../assets/config.js?v=af950c991d" defer></script>
 <script src="../assets/app.js?v=e095bf60be" defer></script>
 <script src="../assets/ai-workspace.js" defer></script>
+<script type="module" src="../assets/forecast-planner.js"></script>
 </body>
 </html>

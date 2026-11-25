@@ -6,7 +6,9 @@
   "scripts": {
     "api": "node service/ai-service.mjs",
     "build": "node scripts/build-site.mjs",
-    "build:demo": "node scripts/build-site.mjs --demo"
+    "build:demo": "node scripts/build-site.mjs --demo",
+    "train:forecast": "node scripts/train-irrigation-model.mjs",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=22"
