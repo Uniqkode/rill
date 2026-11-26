@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "api": "node service/ai-service.mjs"
+    "api": "node service/ai-service.mjs",
+    "train:forecast": "node scripts/train-irrigation-model.mjs",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20"

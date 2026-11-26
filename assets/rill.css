@@ -387,8 +387,6 @@ body.rill-site {
 .rill-editorial { margin: 0; }
 .rill-editorial img { width: 100%; max-height: 420px; object-fit: cover; border-radius: .85rem; }
 .rill-editorial figcaption { margin-top: .55rem; color: var(--muted); font-size: .86rem; }
-.rill-architecture-table th[scope='row'] { width: 24%; }
-.rill-architecture-table th:last-child { width: 16%; }
 .rill-capacity { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 6vw, 5rem); align-items: center; }
 .rill-capacity .rill-head { margin: 0; }
 .rill-capacity-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-bottom: 1rem; }

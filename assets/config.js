@@ -313,9 +313,7 @@ window.BRAND = {
     "registrationEvidence": null,
     "headquarters": null,
     "bookingVerified": false,
-    "contactVerified": false,
-    "azureDeploymentVerified": false,
-    "azureDeploymentEvidence": null
+    "contactVerified": false
   },
   "plan": {
     "composition": "Field inputs, zone planning, operator review, and forecast infrastructure",
@@ -343,32 +341,6 @@ window.BRAND = {
         "Compare the approved allocation with what the operator records at the flow meter."
       ]
     ],
-    "azure": [
-      {
-        "name": "Azure IoT Hub",
-        "url": "https://learn.microsoft.com/en-us/azure/iot-hub/iot-concepts-and-iot-hub",
-        "job": "Receive authenticated soil, flow-meter and field-device readings.",
-        "status": "Planned integration"
-      },
-      {
-        "name": "Azure Machine Learning",
-        "url": "https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-batch?view=azureml-api-2",
-        "job": "Run repeated zone-level water-demand forecasts and evaluate them against actual field outcomes.",
-        "status": "Planned integration"
-      },
-      {
-        "name": "Azure OpenAI in Microsoft Foundry",
-        "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses",
-        "job": "Explain the forecast, operating limit and uncertainty in a readable zone plan.",
-        "status": "Connector implemented · configure Azure deployment"
-      },
-      {
-        "name": "Azure Monitor",
-        "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/overview",
-        "job": "Track missing sensor data, forecast jobs and operator review exceptions.",
-        "status": "Planned integration"
-      }
-    ],
     "next": "Connect sensor readings and weather data; train and evaluate a field-specific demand model.",
     "pilot": "Compare recommended allocations with soil trends and operator-recorded water applications across a growing period.",
     "reviewRoles": [
@@ -380,33 +352,21 @@ window.BRAND = {
   "roadmap": [
     {
       "stage": "01",
-      "title": "Product foundation",
-      "status": "Built",
-      "detail": "Website, review workspace, source citations, report retention, operational register and downloads are implemented."
+      "title": "Forecast zone water demand",
+      "status": "Available to try",
+      "detail": "Adjust sample readings to see predicted demand, suggested volumes and pump time by zone."
     },
     {
       "stage": "02",
-      "title": "Azure model connection",
-      "status": "Ready to configure",
-      "detail": "Azure OpenAI connector code and configuration checks are implemented. A deployed model, endpoint and server-side credentials are still required."
+      "title": "Connect field inputs",
+      "status": "Next",
+      "detail": "Bring soil probes, flow meters and weather feeds into daily planning."
     },
     {
       "stage": "03",
-      "title": "Sector data integration",
+      "title": "Validate with farm teams",
       "status": "Planned",
-      "detail": "Connect sensor readings and weather data; train and evaluate a field-specific demand model."
-    },
-    {
-      "stage": "04",
-      "title": "Reviewed field pilot",
-      "status": "Planned",
-      "detail": "Compare recommended allocations with soil trends and operator-recorded water applications across a growing period."
-    },
-    {
-      "stage": "05",
-      "title": "Production operations",
-      "status": "Planned",
-      "detail": "Implement verified accounts, organization access, audit history, retention controls, monitoring and measured capacity limits before commercial operation."
+      "detail": "Train on approved histories and compare forecasts with reviewed field water needs across later watering cycles."
     }
   ],
   "growth": {
@@ -457,9 +417,9 @@ window.BRAND = {
     ],
     "methods": [
       {
-        "name": "Zone-level regression",
-        "job": "Estimate demand from recent soil, weather, crop-stage and application observations.",
-        "test": "Compare a gradient-boosted baseline with the farm’s existing planning method using time-based validation."
+        "name": "Zone demand forecasting",
+        "job": "Estimate demand from recent soil readings, crop stage and the weather outlook.",
+        "test": "Compare forecast error with the farm’s existing planning method across later watering cycles."
       },
       {
         "name": "Constraint-aware allocation",
@@ -472,7 +432,7 @@ window.BRAND = {
         "test": "Check that the explanation matches the actual forecast inputs and uncertainty."
       }
     ],
-    "compute": "Start with managed Azure ML batch forecasts. A tabular baseline may use CPU inference; use GPU training only if a more complex time-series model demonstrates a useful improvement. Scale recurring zone forecasts and missing-data monitoring independently.",
+    "compute": "Measure forecast processing time, missing field inputs and the daily update volume during field pilots.",
     "tool": "water",
     "toolTitle": "Compare a daily water budget.",
     "toolIntro": "Change the available budget and reserve. This planning tool shows the resulting allocation; it is not a live irrigation command.",
