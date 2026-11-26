@@ -40,6 +40,9 @@
     async signOut() {
       result(await client.auth.signOut({ scope: 'local' }));
     },
+    onSessionChange(callback) {
+      client.auth.onAuthStateChange((_event, session) => callback(Boolean(session)));
+    },
     onSessionEnd(callback) {
       client.auth.onAuthStateChange(event => {
         if (event === 'SIGNED_OUT') queueMicrotask(callback);

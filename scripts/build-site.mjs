@@ -20,7 +20,12 @@ if (siteUrl.username || siteUrl.password || siteUrl.search || siteUrl.hash
 }
 if (!siteUrl.pathname.endsWith('/')) siteUrl.pathname += '/';
 
-const authPages = ['login/index.html', 'dashboard/index.html'];
+const sessionPages = new Map([
+  ['index.html', './'],
+  ['home/index.html', '../'],
+  ['login/index.html', '../'],
+  ['dashboard/index.html', '../'],
+]);
 const pageDirs = ['about', 'ai-policy', 'blog', 'contact', 'dashboard', 'data-policy', 'home', 'legal', 'login',
   'market', 'pricing', 'privacy', 'problem', 'product', 'roadmap', 'security', 'solution', 'team', 'Technology', 'terms'];
 const assetTypes = new Set(['.css', '.jpg', '.jpeg', '.png', '.webp', '.svg', '.woff2', '.js', '.json', '.txt']);
@@ -75,7 +80,7 @@ async function writeAuthAssets() {
   for (const name of ['workspace-data.js', 'workspace-entry.js']) {
     scripts.push(`assets/${name}?v=${revision(await readFile(join(root, 'assets', name)))}`);
   }
-  return scripts.map(path => `<script src="../${path}" defer></script>`).join('\n');
+  return scripts;
 }
 
 async function htmlFiles(directory) {
@@ -90,7 +95,7 @@ async function htmlFiles(directory) {
 
 try {
   await copyAssets();
-  const scripts = demo ? '' : await writeAuthAssets();
+  const scripts = demo ? [] : await writeAuthAssets();
   const pages = ['index.html', '404.html'];
   for (const directory of pageDirs) pages.push(...await htmlFiles(directory));
   const revisions = {};
@@ -103,9 +108,11 @@ try {
       (_, prefix, name) => `${prefix}${name}?v=${revisions[name]}`);
     if (!demo) {
       html = html.replaceAll('>Sign in to the demo<', '>Open workspace<');
-      if (authPages.includes(path)) {
+      const base = sessionPages.get(path);
+      if (base) {
         if (!html.includes('<!-- rill-live-scripts -->')) throw new Error(`Missing auth script marker in ${path}.`);
-        html = html.replace('data-workspace-mode="demo"', 'data-workspace-mode="live"').replace('<!-- rill-live-scripts -->', scripts);
+        const tags = scripts.map(script => `<script src="${base}${script}" defer></script>`).join('\n');
+        html = html.replace('data-workspace-mode="demo"', 'data-workspace-mode="live"').replace('<!-- rill-live-scripts -->', tags);
         html = html.replace(/<!-- rill-demo-login:start -->[\s\S]*?<!-- rill-demo-login:end -->/, '');
         if (path === 'dashboard/index.html') html = html.replace(/^<script src="\.\.\/assets\/ai-workspace\.js[^\n]*\n/m, '');
       }

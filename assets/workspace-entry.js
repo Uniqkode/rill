@@ -357,5 +357,14 @@
     }
   }
 
-  window.RILL_WORKSPACE_ENTRY = { login, dashboard };
+  function home() {
+    const accountLink = $('[data-home-account-link]');
+    if (!accountLink || !backend) return;
+    backend.onSessionChange(signedIn => {
+      accountLink.textContent = signedIn ? 'Workspace' : 'Log in';
+      accountLink.href = signedIn ? dashboardUrl.href : loginUrl.href;
+    });
+  }
+
+  window.RILL_WORKSPACE_ENTRY = { home, login, dashboard };
 })();

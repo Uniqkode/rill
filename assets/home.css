@@ -191,6 +191,11 @@
 .rill-home .compare-panel .compare-bar { height: 1rem; }
 .rill-home .compare-panel .compare-bar--planned { background: linear-gradient(90deg, #3b7e41 82.666%, var(--sage-wash) 82.666%); }
 .rill-home .rill-process { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+.rill-home-photo { width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; border-radius: .8rem; }
+.rill-process .rill-home-photo { margin-top: 1.45rem; object-position: center 67%; }
+.rill-roadmap-intro { align-items: center; margin-bottom: clamp(1.4rem, 4vw, 3rem); }
+.rill-roadmap-intro .rill-head { margin: 0; }
+.rill-roadmap-intro .rill-home-photo { object-position: center 70%; }
 .rill-home .rill-steps { gap: .75rem; }
 .rill-home .rill-step { border-color: var(--line-strong); border-radius: .55rem; }
 .rill-home .rill-step summary { min-height: 3.7rem; }
