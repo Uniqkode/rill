@@ -3,8 +3,8 @@ import http from 'node:http';
 import {createHash,timingSafeEqual} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
-import {forecastIrrigation,validateDemandModel} from '../assets/irrigation-forecast.js';
-import {irrigationModel} from '../assets/irrigation-model.js';
+import {forecastIrrigation,validateDemandModel} from './irrigation-forecast.mjs';
+import {irrigationModel} from './irrigation-model.mjs';
 import {aiBriefs} from './product-definition.mjs';
 import {resolveProviderConfiguration} from './provider-config.mjs';
 

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#133b2f">
   <title>AI irrigation forecasting technology | Rill</title>
-  <meta name="description" content="Run Rill's irrigation demand model on editable zone readings and see how shared pump and water limits shape the daily plan.">
+  <meta name="description" content="See how Rill forecasts irrigation demand and how farm teams use shared pump and water limits to build a daily plan.">
   <meta property="og:title" content="AI irrigation forecasting technology | Rill">
-  <meta property="og:description" content="Run Rill's irrigation demand model on editable zone readings and see how shared pump and water limits shape the daily plan.">
+  <meta property="og:description" content="See how Rill forecasts irrigation demand and how farm teams use shared pump and water limits to build a daily plan.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://uniqkode.github.io/rill/Technology/">
   <link rel="canonical" href="https://uniqkode.github.io/rill/Technology/">
@@ -39,17 +39,20 @@
       <span class="rill-eyebrow">AI irrigation technology</span>
       <h1>Predict demand. Plan around a shared pump.</h1>
       <p>Rill’s machine-learning model estimates what each zone needs over the next 24 hours. Commercial farms and cooperatives can see which zones to review first and how much water their pump can deliver.</p>
-      <div class="rill-actions"><a class="rill-button" href="#forecast">Run the AI forecast</a><a class="rill-button rill-button--outline" href="#model">See what drives the forecast</a></div>
+      <div class="rill-actions"><a class="rill-button" href="#forecast">Access the AI forecast</a><a class="rill-button rill-button--outline" href="#model">See what drives the forecast</a></div>
     </div>
   </div>
 </section>
 <section class="rill-section rill-section--muted" id="forecast" aria-labelledby="forecast-heading">
   <div class="rill-shell">
     <header class="rill-head">
-      <h2 id="forecast-heading">Build a 24-hour zone plan.</h2>
-      <p>Try the prefilled farm or enter your own readings. Change the expected rain or pump window and rerun to see the effect on the plan.</p>
+      <h2 id="forecast-heading">Run forecasts in your Rill workspace.</h2>
+      <p>Create a free account to forecast the next 24 hours for a sample farm or your workspace zones. Compare demand with your water and pump limits, then export the plan for review.</p>
     </header>
-    <rill-forecast-planner sample><p>Enable JavaScript to use the interactive forecast.</p></rill-forecast-planner>
+    <div class="rill-actions">
+      <a class="rill-button" href="https://uniqkode-rill.pages.dev/login/?mode=signup&amp;next=forecast">Create a free account</a>
+      <a class="rill-button rill-button--outline" href="https://uniqkode-rill.pages.dev/login/?next=forecast">Log in to forecast</a>
+    </div>
   </div>
 </section>
 <section class="rill-section" id="model">
@@ -66,11 +69,11 @@
     <div class="rill-card forecast-evaluation">
       <div>
         <h3>Model evaluation</h3>
-        <p>Rill trained the model on <strong data-forecast-model="training">1,536</strong> simulated zone observations and tested it on <strong data-forecast-model="holdout">384</strong> observations from later dates in the same simulation. Farm pilots will measure accuracy against field observations.</p>
+        <p>Rill trained the model on <strong>1,536</strong> simulated zone observations and tested it on <strong>384</strong> observations from later dates in the same simulation. Farm pilots will measure accuracy against field observations.</p>
       </div>
       <dl class="rill-metrics">
-        <div><dt>Model mean absolute error</dt><dd><span data-forecast-model="error">—</span> mm</dd></div>
-        <div><dt>Water-balance baseline error</dt><dd><span data-forecast-model="baseline">—</span> mm</dd></div>
+        <div><dt>Model mean absolute error</dt><dd>1.25 mm</dd></div>
+        <div><dt>Water-balance baseline error</dt><dd>4.30 mm</dd></div>
       </dl>
     </div>
   </div>
@@ -161,6 +164,5 @@
 <script defer src="../assets/config.js?v=28b65a0789"></script>
 <script defer src="../assets/app.js?v=e095bf60be"></script>
 <script defer src="../assets/site.js?v=8ed038a6ca"></script>
-<script type="module" src="../assets/forecast-planner.js"></script>
 </body>
 </html>

@@ -42,7 +42,7 @@
       <span class="rill-eyebrow">AI irrigation for teams</span>
       <h1>Turn zone forecasts into a daily watering plan.</h1>
       <p>Estimate water demand across your commercial farm or cooperative. Review the watering order, expected volume and pump time before the next cycle.</p>
-      <div class="rill-actions"><a class="rill-button" href="https://uniqkode-rill.pages.dev/login/">Open workspace</a><a class="rill-button rill-button--outline" href="../Technology/#forecast">Try the AI forecast</a></div>
+      <div class="rill-actions"><a class="rill-button" href="https://uniqkode-rill.pages.dev/login/">Open workspace</a><a class="rill-button rill-button--outline" href="../Technology/#forecast">Access the AI forecast</a></div>
     </div>
   </div>
 </section><section class="rill-section">
@@ -73,16 +73,19 @@
 </header>
 <div class="rill-workbench"><div class="g-domain-tool g-domain-tool--water" data-domain-tool="water"><div class="g-tool-fields"><label>Available daily water (m³)<input data-tool-input="budget" name="budget" type="number" value="1500" min="1" max="100000" step="1" required></label><label>Reserve (%)<input data-tool-input="reserve" name="reserve" type="number" value="10" min="0" max="100" step="1" required></label></div><div class="g-water-zones" data-water-zones aria-label="Three-zone planning allocation"></div><div class="g-tool-result" aria-live="polite"><span data-tool-label>Entered comparison</span><strong data-tool-value>—</strong><p data-tool-note></p></div></div></div>
   </div>
-</section><section class="rill-section">
+</section><section class="rill-section" id="try-analysis">
   <div class="rill-shell">
-<header class="rill-head">
-  <span class="rill-eyebrow">Sample review</span>
-  <h2>Open a finding and check the source.</h2>
-  <p>Check the source behind a prepared finding and download the review for your team.</p>
-</header>
-<div class="rill-workbench" id="try-analysis"><div class="ai-workbench " data-ai-workbench><div class="ai-workbench-toolbar"><div><span class="v2-label">RILL / REVIEW DESK</span><h3>North pivot · Next 24 hours</h3></div><span class="v2-chip">Prepared examples</span></div><div class="ai-case-bar"><label>Choose a case<select data-ai-case aria-label="Choose a sample case"><option value="primary">North pivot · Next 24 hours</option><option value="alternate">Nursery · Completed cycle</option></select></label><button class="button" type="button" data-ai-run>Analyze this sample <span aria-hidden="true"><svg class="ui-arrow" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10m-4-4 4 4-4 4"/></svg></span></button></div><div class="ai-workbench-grid"><section class="ai-source-panel" aria-label="Source evidence"><div class="ai-panel-title"><span>01 / INPUT</span><h4>The source material</h4></div><div class="ai-source-tabs" role="group" aria-label="Choose evidence source" data-ai-sources><button type="button" data-source="S1" aria-pressed="true" class="active"><span>S1</span>Soil observations</button><button type="button" data-source="S2" aria-pressed="false" class=""><span>S2</span>Weather &amp; capacity scenario</button></div><div class="ai-source-document"><div class="ai-document-bar"><span data-ai-filename>zone-01-observations.csv</span><span class="ai-document-type">SAMPLE EXTRACT</span></div><p data-ai-excerpt>Zone 01, tomato, flowering stage. Latest soil moisture: 21%. Previous reading: 23%. Observation note: confirm the sensor before changing the watering cycle.</p><span class="ai-source-foot">Evidence is prepared for this demonstration. Use the source reference to check the finding.</span></div><details class="ai-upload-options" hidden><summary>Use your own files with a connected AI service</summary><p>Use a configured review service with sample material while you try the workflow.</p><label>AI service address<input type="url" data-ai-endpoint placeholder="https://your-service.example" maxlength="250"></label><label>Service access token (if required)<input type="password" data-ai-service-token autocomplete="off" placeholder="Used only for this request" maxlength="300"></label><label>Text evidence<textarea rows="4" data-ai-custom-text placeholder="Paste non-sensitive test material. A connected service is required to analyze it." maxlength="30000"></textarea></label><label>Optional images<input type="file" data-ai-files accept="image/jpeg,image/png,image/webp" multiple></label><p data-ai-file-count class="ai-file-count">Up to 4 test images; 2 MB each.</p><button class="button button-outline" type="button" data-ai-live-run>Analyze with connected service <span aria-hidden="true"><svg class="ui-arrow" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12 12 4M4 4h8v8"/></svg></span></button><p class="ai-service-note">Only this button sends your entered material to the service address you specify. Prepared sample runs stay in your browser.</p></details></section><section class="ai-output-panel" aria-label="Analysis result"><div class="ai-panel-title"><span>02 / OUTPUT</span><h4>The review brief</h4></div><div class="ai-run-progress" hidden data-ai-progress role="status" aria-live="polite"></div><div class="ai-output-content" data-ai-output><div class="ai-output-empty"><div class="ai-empty-mark"><span class="brand-logo mark-only"><svg viewBox="0 0 48 48" fill="none" role="img" aria-label="Rill mark"><path d="M10 39V11h13c13 0 15 17 2 19l13 9M18 39V18h6c4 0 4 5 0 5h-6" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M34 6c-6 7-6 11 0 11s6-4 0-11Z" fill="currentColor"/></svg></span></div><h4>Run the sample.<br>Then inspect the finding.</h4><p>See how the source becomes a specific question, a cited observation and a next action.</p><div><span>Source reference</span><span>Clear finding</span><span>Human decision</span></div></div></div><div class="ai-report-actions" hidden data-ai-report-actions><button class="button" type="button" data-ai-accept>Accept for human review <span aria-hidden="true"><svg class="ui-arrow" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12 12 4M4 4h8v8"/></svg></span></button><button class="text-button" type="button" data-ai-download>Download report</button></div><p class="ai-run-status" data-ai-status role="status" aria-live="polite"></p></section></div><div class="ai-workbench-foot"><span>These cases use prepared findings for operator review.</span><span>Evidence <svg class="ui-arrow" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10m-4-4 4 4-4 4"/></svg> finding <svg class="ui-arrow" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 8h10m-4-4 4 4-4 4"/></svg> operator decision</span></div></div></div>
+    <header class="rill-head">
+      <h2>Review the forecast with your team.</h2>
+      <p>Registered users can see what drove each estimate, check suggested allocations against pump limits and download the daily plan.</p>
+    </header>
+    <div class="rill-actions">
+      <a class="rill-button" href="https://uniqkode-rill.pages.dev/login/?mode=signup&amp;next=forecast">Create a free account</a>
+      <a class="rill-link" href="https://uniqkode-rill.pages.dev/login/?next=forecast">Log in to forecast</a>
+    </div>
   </div>
-</section><section class="rill-section rill-dark">
+</section>
+<section class="rill-section rill-dark">
   <div class="rill-shell">
 <div class="rill-tech-summary">
   <div>
@@ -161,7 +164,6 @@
 <script defer src="../assets/config.js?v=28b65a0789"></script>
 <script defer src="../assets/app.js?v=e095bf60be"></script>
 <script defer src="../assets/site.js?v=8ed038a6ca"></script>
-<script defer src="../assets/ai-workspace.js"></script>
 <script type="module" src="../assets/growth-interactions.js"></script>
 </body>
 </html>

@@ -18,7 +18,7 @@ GitHub Pages publishes the public website from `main`. Its login and dashboard r
 
 ## Run a forecast
 
-Open [Technology → AI forecast](Technology/#forecast). Change the weather or soil readings to see demand change. Change the available water or pump window to see how much of that demand can be served. The planner supports up to 200 zones sharing a pump and weather window, shows which factors drove each forecast, and exports a dated CSV with the model version and inputs.
+Sign in to Rill, open **AI forecast** in your workspace and choose a sample farm or workspace zones. Change the weather or soil readings to see demand change. Change the available water or pump window to see how much of that demand can be served. The planner supports up to 200 zones sharing a pump and weather window, shows which factors drove each forecast, and exports a dated CSV with the model version and inputs.
 
 The built-in constrained ridge regression was trained on simulated irrigation observations. Its evaluation uses later dates in the simulation. The irrigation team reviews all suggestions and operates the pump. Use field history and a local pilot to establish accuracy for a commercial deployment.
 
@@ -30,7 +30,7 @@ The visual identity uses deep forest `#101E14`, sage `#E9F2E5`, and lime `#D2F77
 
 ## Azure deployment
 
-The demand model runs in the browser and through the Node API. The roadmap outlines the planned Azure integration for connected field telemetry, model training, batch inference and operator review.
+The hosted planner checks workspace membership when you run a forecast. The repository also includes a local Node model service. The roadmap outlines the planned Azure integration for connected field telemetry, model training, batch inference and operator review.
 
 The capacity calculator models 80 farms × 60 zones × 4 updates per day × 30 days as 576,000 forecasts in a 30-day period. Actual throughput and forecast quality depend on the deployment and field evaluation.
 

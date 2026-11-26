@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import test from 'node:test';
-import { forecastIrrigation, validateDemandModel } from '../assets/irrigation-forecast.js';
-import { irrigationModel } from '../assets/irrigation-model.js';
+import { forecastIrrigation, validateDemandModel } from '../service/irrigation-forecast.mjs';
+import { irrigationModel } from '../service/irrigation-model.mjs';
 import { createAIService } from '../service/ai-service.mjs';
 
 const input = {
