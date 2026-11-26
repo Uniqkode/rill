@@ -85,10 +85,6 @@
         directory.append(card);
       }
     }
-
-    if (company.azureDeploymentVerified === true && httpsUrl(company.azureDeploymentEvidence)) {
-      for (const element of selectAll('[data-cloud-credit]')) element.textContent = 'Built on Microsoft Azure';
-    }
   }
 
   function showObservedUsage() {

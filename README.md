@@ -39,7 +39,7 @@ The visual identity uses deep forest `#101E14`, sage `#E9F2E5`, and lime `#D2F77
 
 ## Azure deployment
 
-The demand model runs in the browser and through the Node API. The Technology page outlines the proposed Azure deployment for live telemetry, storage, field-trained batch inference and optional evidence review.
+The demand model runs in the browser and through the Node API. The roadmap outlines the planned Azure integration for connected field telemetry, model training, batch inference and operator review.
 
 The capacity calculator models 80 farms × 60 zones × 4 updates per day × 30 days as 576,000 forecasts in a 30-day period. Actual throughput and forecast quality depend on the deployment and field evaluation.
 

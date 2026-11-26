@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#133b2f">
   <title>Security and data controls | Rill</title>
-  <meta name="description" content="Review Rill’s browser-local sample controls and the planned production identity, tenant storage, monitoring and audit design.">
+  <meta name="description" content="See who can access workspace records, how forecast inputs are handled and what safeguards are planned for field pilots.">
   <meta property="og:title" content="Security and data controls | Rill">
-  <meta property="og:description" content="Review Rill’s browser-local sample controls and the planned production identity, tenant storage, monitoring and audit design.">
+  <meta property="og:description" content="See who can access workspace records, how forecast inputs are handled and what safeguards are planned for field pilots.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://uniqkode.github.io/rill/security/">
   <link rel="canonical" href="https://uniqkode.github.io/rill/security/">
   <link rel="icon" type="image/svg+xml" href="../assets/logo.svg?v=f8e3fcb6f4">
-  <link rel="stylesheet" href="../assets/rill.css?v=fc285b6da8">
+  <link rel="stylesheet" href="../assets/rill.css?v=2561256877">
 </head>
 <body class="rill-site rill-modern" data-brand="rill" data-base="../" data-page="security">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -38,14 +38,14 @@
       <span class="rill-eyebrow">Security</span>
       <h1>Keep field data and decisions accountable.</h1>
       <p>See how sample data is stored and how the hosted workspace controls access.</p>
-      <div class="rill-actions"><a class="rill-button" href="../data-policy/">Read the data policy</a><a class="rill-button rill-button--outline" href="../Technology/">View infrastructure</a></div>
+      <div class="rill-actions"><a class="rill-button" href="../data-policy/">Read the data policy</a><a class="rill-button rill-button--outline" href="../Technology/">See the forecast workflow</a></div>
     </div>
   </div>
 </section><section class="rill-section">
   <div class="rill-shell">
 <header class="rill-head">
   <span class="rill-eyebrow">Sample workspace</span>
-  <h2>Controls in the current workflow.</h2>
+  <h2>Controls for irrigation teams.</h2>
 </header><div class="rill-grid-3">
   <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3m-4 4v2"/></svg></span><h3>Browser-local records</h3><p>Sample edits, review reports and activity remain in this browser. Reset removes workspace changes and the sample session.</p></article>
   <article class="rill-card"><span class="rill-card-icon"><svg class="rill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Explicit data submission</h3><p>Prepared cases run locally. Connected analysis sends only entered inputs to the service address specified by the operator.</p></article>
@@ -56,25 +56,25 @@
   <div class="rill-shell">
     <header class="rill-head"><span class="rill-eyebrow">Hosted workspace</span><h2>Access follows membership.</h2></header>
     <div class="rill-grid-3">
-      <article class="rill-card"><h3>Email and password</h3><p>Supabase Auth verifies email addresses, checks passwords and manages sessions.</p></article>
-      <article class="rill-card"><h3>Workspace permissions</h3><p>Postgres checks membership for each zone record. Editing requires an owner or operator role and a paid workspace plan.</p></article>
+      <article class="rill-card"><h3>Email and password</h3><p>Members sign in with a confirmed email address and password.</p></article>
+      <article class="rill-card"><h3>Workspace permissions</h3><p>Members can access zone records in their own workspace. Editing requires an owner or operator role and a paid workspace plan.</p></article>
       <article class="rill-card"><h3>Recorded changes</h3><p>Zone changes create activity entries with a timestamp and the signed-in account.</p></article>
     </div>
   </div>
 </section><section class="rill-section rill-section--muted">
   <div class="rill-shell">
 <header class="rill-head">
-  <span class="rill-eyebrow">Azure deployment option</span>
+  <span class="rill-eyebrow">Organizational deployment</span>
   <h2>Planned controls for production data.</h2>
 </header><div class="rill-table-wrap" tabindex="0" role="region" aria-label="Planned production security controls">
   <table class="rill-table">
-    <thead><tr><th scope="col">Control</th><th scope="col">Implementation design</th></tr></thead>
+    <thead><tr><th scope="col">Control</th><th scope="col">Planned safeguard</th></tr></thead>
     <tbody>
-      <tr><th scope="row">Identity and permissions</th><td>Microsoft Entra ID and role-based authorization for operators, reviewers and administrators. Use managed identities for service-to-service access.</td></tr>
-      <tr><th scope="row">Storage isolation</th><td>Tenant-scoped Blob containers, encryption settings and retention policies. Validate separation and access requirements before data ingestion.</td></tr>
-      <tr><th scope="row">Keys and network</th><td>Azure Key Vault for secrets and certificates, TLS 1.2+ and Azure Private Link for supported services.</td></tr>
-      <tr><th scope="row">Operational monitoring</th><td>Azure Monitor and Application Insights to measure service health and errors. Defender for Cloud for resource security posture.</td></tr>
-      <tr><th scope="row">Audit retention</th><td>Route protected audit records to immutable storage under a defined retention period.</td></tr>
+      <tr><th scope="row">Identity and permissions</th><td>Assign access by role and limit service permissions to the data needed for each operation.</td></tr>
+      <tr><th scope="row">Storage isolation</th><td>Separate records by organization, encrypt stored data, and validate access and retention rules before ingesting farm records.</td></tr>
+      <tr><th scope="row">Keys and network</th><td>Restrict access to service credentials and protect data in transit.</td></tr>
+      <tr><th scope="row">Operational monitoring</th><td>Monitor service failures, delayed forecasts and missing field readings during pilots.</td></tr>
+      <tr><th scope="row">Audit retention</th><td>Protect audit records from modification and agree on a retention period with the organization.</td></tr>
     </tbody>
   </table>
 </div>
@@ -86,7 +86,7 @@
   <h2>Before connecting organizational data.</h2>
 </header><div class="rill-faq">
   <details><summary>Does sample access create an account?</summary><p>Sample access opens a public browser-local workspace. Organization access requires a configured identity provider and tenant permissions.</p></details>
-  <details><summary>Where are model credentials stored?</summary><p>Provider credentials are configured on the server running the included adapter. The static pages contain no provider secrets.</p></details>
+  <details><summary>What happens to the readings I enter in the forecast?</summary><p>The planner keeps readings in the current tab. You can export them with the suggested plan for your own records.</p></details>
   <details><summary>How do I clear sample workspace data?</summary><p>Use Reset demo data under Settings. Downloads and material previously sent through external services are managed separately.</p></details>
 </div>
   </div>
@@ -96,7 +96,7 @@
   <div class="rill-shell rill-footer-grid">
     <div class="rill-footer-brand">
       <a class="rill-wordmark" href="../" aria-label="Rill home"><span class="rill-brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M10 39V11h13c13 0 15 17 2 19l13 9M18 39V18h6c4 0 4 5 0 5h-6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M34 6c-6 7-6 11 0 11s6-4 0-11Z" fill="currentColor"/></svg></span><strong>Rill</strong></a>
-      <p>Irrigation planning software for commercial farms and cooperatives.</p>
+      <p>AI irrigation planning for commercial farms and cooperatives.</p>
       <p data-company-identity hidden></p>
     </div>
     <div>
@@ -133,11 +133,10 @@
   <div class="rill-shell rill-footer-bottom">
     <span>© 2026 Rill</span>
     <a href="https://github.com/Uniqkode" data-company-profile>Project maintainer</a>
-    <a href="../Technology/" data-cloud-credit>Azure deployment architecture</a>
   </div>
 </footer>
-<script defer src="../assets/config.js?v=af950c991d"></script>
+<script defer src="../assets/config.js?v=28b65a0789"></script>
 <script defer src="../assets/app.js?v=e095bf60be"></script>
-<script defer src="../assets/site.js?v=290415e087"></script>
+<script defer src="../assets/site.js?v=8ed038a6ca"></script>
 </body>
 </html>
