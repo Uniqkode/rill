@@ -103,6 +103,9 @@
   opacity: .8;
 }
 .field-map-sweep { opacity: 0; pointer-events: none; }
+.field-map-motion { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
+.has-field-motion .field-map-sweep { display: none; }
+.has-field-motion .field-pin[aria-pressed='true']::after { animation: none; }
 .rill-home .field-pin {
   position: absolute;
   z-index: 2;
