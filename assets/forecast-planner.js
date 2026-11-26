@@ -1,5 +1,4 @@
-import { CROP_STAGES, FIELD_SPECS, MAX_ZONES, forecastIrrigation } from './irrigation-forecast.js';
-import { irrigationModel } from './irrigation-model.js';
+import { CROP_STAGES, FIELD_SPECS, MAX_ZONES } from './forecast-inputs.js';
 
 const weatherFields = ['et0Mm', 'rainMm'];
 const pumpFields = ['waterBudgetM3', 'flowM3h', 'pumpHours', 'efficiencyPct'];
@@ -36,12 +35,12 @@ function metric(label, value, unit) {
   return `<div><dt>${label}</dt><dd>${fmt(value)} ${value === null ? '' : `<small>${unit}</small>`}</dd></div>`;
 }
 
-function zoneResult(zone, recordId) {
+function zoneResult(zone, recordId, baselineOffsetMm) {
   const reasons = zone.flags.length
     ? `<ul>${zone.flags.map(flag => `<li>${esc(flag)}</li>`).join('')}</ul>`
     : `<details class="forecast-reasons"><summary>Why ${fmt(zone.netMm)} mm of net demand?</summary><ul>
         ${zone.drivers.map(driver => `<li>${esc(driver.label)} <strong>${signed.format(driver.effectMm)} mm</strong></li>`).join('')}
-        <li>Fitted offset <strong>${signed.format(irrigationModel.intercept)} mm</strong></li>
+        <li>Fitted offset <strong>${signed.format(baselineOffsetMm)} mm</strong></li>
       </ul>${zone.netMm === 0 ? '<p class="rill-quiet">Predicted depth has a minimum of 0 mm.</p>' : ''}</details>`;
   return `<li class="forecast-result-zone">
     <div class="forecast-zone-heading">
@@ -84,16 +83,17 @@ function downloadPlan({ plan, input, generatedAt }) {
 class ForecastPlanner extends HTMLElement {
   #availableZones = [];
   #latest = null;
+  #sampleMode = false;
+  #pending = null;
 
   connectedCallback() {
     if (this.querySelector('form')) return;
-    const useSample = this.hasAttribute('sample');
     this.innerHTML = `
       <div class="forecast-console">
         <form method="post" class="forecast-inputs">
           <div class="forecast-block-heading">
             <h3>Planning inputs</h3>
-            ${useSample ? '<button class="rill-link forecast-link-button" type="button" data-reset-forecast>Reset sample</button>' : ''}
+            <button class="rill-link forecast-link-button" type="button" data-toggle-sample>Load sample farm</button>
           </div>
           <fieldset>
             <legend>Weather for the next 24 hours</legend>
@@ -108,14 +108,14 @@ class ForecastPlanner extends HTMLElement {
             <h4>Irrigation zones</h4>
             <p class="rill-quiet">Enter volumetric soil moisture and the refill target for each zone.</p>
             <div class="forecast-zone-list" data-forecast-zones></div>
-            <div class="forecast-zone-picker" ${useSample ? 'hidden' : ''}>
+            <div class="forecast-zone-picker" data-forecast-zone-picker>
               <label>Workspace zone<select data-forecast-picker></select></label>
             </div>
             <button type="button" class="rill-button rill-button--outline rill-button--small" data-add-forecast-zone>Add zone</button>
           </div>
           <div class="forecast-controls">
             <button class="rill-button" type="submit">Run AI forecast</button>
-            <p class="rill-quiet">Inputs stay in this tab. The operator reviews the plan and runs the pump.</p>
+            <p class="rill-quiet">Run the forecast to submit this plan’s readings. The operator reviews the result and runs the pump.</p>
           </div>
         </form>
         <section class="forecast-results" aria-label="24-hour irrigation plan">
@@ -123,7 +123,7 @@ class ForecastPlanner extends HTMLElement {
             <h3 tabindex="-1" data-forecast-title>24-hour irrigation plan</h3>
             <button type="button" class="rill-link forecast-link-button" data-export-forecast hidden>Export CSV</button>
           </div>
-          <p class="forecast-model-name">${irrigationModel.version} · Trained on simulated field data</p>
+          <p class="forecast-model-name">Trained on simulated field data</p>
           <p class="forecast-status" role="status" tabindex="-1"></p>
           <div data-forecast-output><p>Enter field readings and pump limits to see the suggested watering order.</p></div>
         </section>
@@ -146,7 +146,7 @@ class ForecastPlanner extends HTMLElement {
     this.querySelector('[data-add-forecast-zone]').addEventListener('click', () => {
       const id = this.querySelector('[data-forecast-picker]').value;
       const record = this.#availableZones.find(zone => zone.id === id);
-      if (!useSample && !record) return;
+      if (!this.#sampleMode && !record) return;
       const row = this.#addZone(record ? { id, name: this.#workspaceName(record) } : {}, true);
       row.querySelector(record ? '[name=areaHa]' : '[name=zoneName]').focus();
       this.#invalidate();
@@ -154,9 +154,8 @@ class ForecastPlanner extends HTMLElement {
     this.querySelector('[data-export-forecast]').addEventListener('click', () => {
       if (this.#latest) downloadPlan(this.#latest);
     });
-    this.querySelector('[data-reset-forecast]')?.addEventListener('click', () => this.#reset());
-    if (useSample) this.#reset();
-    else this.#showZoneOptions();
+    this.querySelector('[data-toggle-sample]').addEventListener('click', () => this.#toggleSample());
+    this.#showZoneOptions();
   }
 
   #workspaceName(record) {
@@ -166,6 +165,7 @@ class ForecastPlanner extends HTMLElement {
 
   set workspaceZones(zones) {
     this.#availableZones = zones;
+    if (this.#sampleMode) return;
     for (const row of this.querySelectorAll('details[data-zone-id]')) {
       const record = zones.find(zone => zone.id === row.dataset.zoneId);
       const name = row.querySelector('[name=zoneName]');
@@ -193,8 +193,12 @@ class ForecastPlanner extends HTMLElement {
     if (choices.some(zone => zone.id === selected)) picker.value = selected;
     if (!choices.length) picker.add(new Option(this.#availableZones.length ? 'All workspace zones added' : 'No zones in this workspace', ''));
     picker.disabled = full || !choices.length;
-    button.disabled = full || (!this.hasAttribute('sample') && !choices.length);
-    this.querySelector('[type=submit]').disabled = chosen.length === 0;
+    button.disabled = full || (!this.#sampleMode && !choices.length);
+    this.#updateSubmit();
+  }
+
+  #updateSubmit() {
+    this.querySelector('[type=submit]').disabled = !!this.#pending || !this.querySelector('details[data-zone-id]');
   }
 
   #showName(input) {
@@ -231,26 +235,37 @@ class ForecastPlanner extends HTMLElement {
     return row;
   }
 
-  #reset() {
-    for (const key of [...weatherFields, ...pumpFields]) this.querySelector(`[name=${key}]`).value = example[key];
+  #toggleSample() {
+    this.#sampleMode = !this.#sampleMode;
+    this.querySelector('form').reset();
     this.querySelector('[data-forecast-zones]').replaceChildren();
-    example.zones.forEach(zone => this.#addZone(zone, false));
-    this.#run();
+    this.querySelector('[data-forecast-zone-picker]').hidden = this.#sampleMode;
+    this.querySelector('[data-toggle-sample]').textContent = this.#sampleMode ? 'Use workspace zones' : 'Load sample farm';
+    if (this.#sampleMode) {
+      for (const key of [...weatherFields, ...pumpFields]) this.querySelector(`[name=${key}]`).value = example[key];
+      example.zones.forEach(zone => this.#addZone(zone, false));
+    }
+    this.#showZoneOptions();
+    this.#invalidate();
   }
 
   #invalidate() {
     const status = this.querySelector('.forecast-status');
-    if (this.#latest) {
+    if (this.#pending || this.#latest) {
+      this.#pending?.abort();
+      this.#pending = null;
       this.#latest = null;
       this.querySelector('[data-export-forecast]').hidden = true;
       this.querySelector('[data-forecast-output]').hidden = true;
       status.textContent = 'Inputs changed. Run the forecast to update the plan.';
+      this.#updateSubmit();
     } else if (!this.querySelector('[data-forecast-output]').hidden) {
       status.textContent = '';
     }
   }
 
-  #run(focus = false) {
+  async #run(focus = false) {
+    if (!this.requestForecast || this.#pending) return;
     const input = numberFields(this, [...weatherFields, ...pumpFields]);
     input.zones = [...this.querySelectorAll('details[data-zone-id]')].map(row => ({
       id: row.dataset.zoneId,
@@ -260,8 +275,16 @@ class ForecastPlanner extends HTMLElement {
     }));
     const status = this.querySelector('.forecast-status');
     const output = this.querySelector('[data-forecast-output]');
+    const controller = new AbortController();
+    this.#pending = controller;
+    this.#latest = null;
+    this.#updateSubmit();
+    output.hidden = true;
+    this.querySelector('[data-export-forecast]').hidden = true;
+    status.textContent = 'Running forecast…';
     try {
-      const plan = forecastIrrigation(input, irrigationModel);
+      const plan = await this.requestForecast(input, controller.signal);
+      if (this.#pending !== controller) return;
       const limit = plan.limitingResource === 'pump' ? 'Pump window' : 'Available water';
       const eligible = plan.withheldZones < plan.zones.length;
       const zoneIds = new Map(input.zones.map(zone => [zone.name, zone.id]));
@@ -272,30 +295,24 @@ class ForecastPlanner extends HTMLElement {
           ${plan.demandM3 > 0 ? `<meter aria-label="Forecast demand covered" min="0" max="${plan.demandM3}" value="${plan.allocatedM3}"></meter>` : ''}
         </div>
         <p class="rill-quiet">Order follows predicted depth. Demand and suggested volumes include application losses.</p>
-        <ol class="forecast-result-zones" aria-label="Zones in priority order">${plan.zones.map(zone => zoneResult(zone, zoneIds.get(zone.name))).join('')}</ol>`;
-      this.#latest = { plan, input, generatedAt: new Date().toISOString() };
+        <ol class="forecast-result-zones" aria-label="Zones in priority order">${plan.zones.map(zone => zoneResult(zone, zoneIds.get(zone.name), plan.model.baselineOffsetMm)).join('')}</ol>`;
+      this.querySelector('.forecast-model-name').textContent = `${plan.model.version} · Trained on simulated field data`;
+      this.#latest = { plan, input, generatedAt: plan.generatedAt };
       output.hidden = false;
       status.textContent = plan.withheldZones ? `${plan.withheldZones} ${plan.withheldZones === 1 ? 'zone needs' : 'zones need'} input review. ${eligible ? 'Totals cover zones with a forecast.' : 'No zone forecast is available.'}` : '';
       this.querySelector('[data-export-forecast]').hidden = false;
       if (focus) this.querySelector('[data-forecast-title]').focus();
     } catch (error) {
-      this.#latest = null;
-      output.hidden = true;
-      this.querySelector('[data-export-forecast]').hidden = true;
+      if (this.#pending !== controller) return;
       status.textContent = error.message;
       status.focus();
+    } finally {
+      if (this.#pending === controller) {
+        this.#pending = null;
+        this.#updateSubmit();
+      }
     }
   }
 }
 
 customElements.define('rill-forecast-planner', ForecastPlanner);
-
-for (const metric of document.querySelectorAll('[data-forecast-model]')) {
-  const values = {
-    training: format.format(irrigationModel.trainingRows),
-    holdout: format.format(irrigationModel.validation.rows),
-    error: irrigationModel.validation.maeMm.toFixed(2),
-    baseline: irrigationModel.validation.baselineMaeMm.toFixed(2),
-  };
-  metric.textContent = values[metric.dataset.forecastModel];
-}

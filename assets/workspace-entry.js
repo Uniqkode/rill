@@ -7,6 +7,13 @@
   const loginUrl = new URL('login/', root);
   const dashboardUrl = new URL('dashboard/', root);
   const inviteKey = 'rill:pending-invite';
+  const forecastKey = 'rill:pending-forecast';
+  const params = new URLSearchParams(window.location.search);
+  let forecastEntry = params.get('next') === 'forecast';
+  if (params.has('code')) {
+    try { forecastEntry ||= localStorage.getItem(forecastKey) === 'forecast'; }
+    catch { /* A saved destination is optional. */ }
+  }
   const $ = selector => document.querySelector(selector);
   const initials = (name, fallback) => typeof name === 'string' && name.trim()
     ? name.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase()
@@ -14,6 +21,9 @@
   const openDashboard = id => {
     const url = new URL(dashboardUrl);
     if (id) url.searchParams.set('workspace', id);
+    if (forecastEntry || window.location.hash === '#forecast') url.hash = 'forecast';
+    try { localStorage.removeItem(forecastKey); }
+    catch { /* Opening the workspace does not depend on this preference. */ }
     window.location.replace(url.href);
   };
   const showError = (node, message) => { node.textContent = message; node.hidden = false; };
@@ -73,7 +83,14 @@
       return;
     }
     let mode;
-    const invitePrompt = () => token ? 'Use the email address that received the workspace invite.' : '';
+    const invitePrompt = () => token ? 'Use the email address that received the workspace invite.'
+      : forecastEntry ? 'Use a Rill account to open the AI irrigation forecast.' : '';
+    const storeEmailDestination = () => {
+      try {
+        if (forecastEntry) localStorage.setItem(forecastKey, 'forecast');
+        else localStorage.removeItem(forecastKey);
+      } catch { /* The link still opens the workspace. */ }
+    };
 
     function showPassword(visible) {
       password.type = visible ? 'text' : 'password';
@@ -164,6 +181,7 @@
       status.textContent = modes[mode].pending;
       try {
         if (mode === 'signup') {
+          storeEmailDestination();
           const { session } = await backend.signUp(address, value, loginUrl.href);
           if (session) {
             await backend.signOut();
@@ -173,6 +191,7 @@
           }
           showMode('signin', 'Check your email for a confirmation link. Open it in this browser.');
         } else if (mode === 'reset') {
+          storeEmailDestination();
           await backend.requestPasswordReset(address, loginUrl.href);
           showMode('signin', 'If this email has a Rill account, you’ll receive a reset link. Open it in this browser.');
         } else {
@@ -189,7 +208,6 @@
       }
     });
 
-    const params = new URLSearchParams(window.location.search);
     const fragment = new URLSearchParams(window.location.hash.slice(1));
     const code = params.get('code');
     try {
@@ -208,7 +226,7 @@
       } else if (await backend.user()) {
         await openWorkspace();
       } else {
-        showMode('signin', invitePrompt());
+        showMode(params.get('mode') === 'signup' ? 'signup' : 'signin', invitePrompt());
       }
     } catch {
       showMode('signin', invitePrompt());
@@ -298,7 +316,12 @@
     if (!backend) { status.textContent = 'The workspace connection is unavailable.'; return; }
     try {
       const user = await backend.user();
-      if (!user) { window.location.replace(loginUrl.href); return; }
+      if (!user) {
+        const next = new URL(loginUrl);
+        if (window.location.hash === '#forecast') next.searchParams.set('next', 'forecast');
+        window.location.replace(next.href);
+        return;
+      }
       let ended = false;
       backend.onSessionEnd(() => {
         ended = true;

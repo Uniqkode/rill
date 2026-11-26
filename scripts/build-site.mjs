@@ -94,10 +94,12 @@ try {
   const pages = ['index.html', '404.html'];
   for (const directory of pageDirs) pages.push(...await htmlFiles(directory));
   const revisions = {};
-  for (const name of ['app.js', 'rill.css', 'dashboard.css']) revisions[name] = revision(await readFile(join(root, 'assets', name)));
+  for (const name of ['app.js', 'rill.css', 'dashboard.css', 'forecast-planner.js']) {
+    revisions[name] = revision(await readFile(join(root, 'assets', name)));
+  }
   for (const path of pages) {
     let html = (await readFile(join(root, path), 'utf8')).replaceAll(originalSite, siteUrl.href);
-    html = html.replace(/(\/assets\/)(app\.js|rill\.css|dashboard\.css)(?:\?v=[\w.-]+)?(?=")/g,
+    html = html.replace(/(\/assets\/)(app\.js|rill\.css|dashboard\.css|forecast-planner\.js)(?:\?v=[\w.-]+)?(?=")/g,
       (_, prefix, name) => `${prefix}${name}?v=${revisions[name]}`);
     if (!demo) {
       html = html.replaceAll('>Sign in to the demo<', '>Open workspace<');
@@ -120,6 +122,7 @@ try {
     const headers = ['/login', '/login/*', '/dashboard', '/dashboard/*'].map(path =>
       `${path}\n  Cache-Control: no-store\n  Referrer-Policy: no-referrer\n  X-Content-Type-Options: nosniff\n  Content-Security-Policy: ${policy}`).join('\n\n');
     await put('_headers', `${headers}\n\n/assets/runtime-config.js\n  Cache-Control: no-store\n`);
+    await put('_routes.json', JSON.stringify({ version: 1, include: ['/api/forecast'], exclude: [] }));
   }
   await put('.rill-build', demo ? 'demo\n' : 'live\n');
   await rm(output, { recursive: true, force: true });

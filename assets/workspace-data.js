@@ -52,6 +52,21 @@
         .map(row => ({ ...row.rill_workspaces, role: row.role }))
         .sort((left, right) => left.name.localeCompare(right.name));
     },
+    async forecast(workspaceId, input, signal) {
+      const { session } = result(await client.auth.getSession());
+      if (!session) throw new Error('Log in again to run an irrigation forecast.');
+      const response = await fetch('/api/forecast', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...input, workspaceId }),
+        signal,
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.model || !Array.isArray(data.zones)) {
+        throw new Error(data?.error || 'The forecast is unavailable. Try again in a moment.');
+      }
+      return data;
+    },
     async createWorkspace(id, name) {
       return result(await client.rpc('rill_create_workspace', { p_id: id, p_name: name }));
     },

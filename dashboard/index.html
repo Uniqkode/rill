@@ -25,7 +25,7 @@
 <main class="workspace-entry rill-shell" data-workspace-setup hidden>
   <section class="workspace-card" aria-labelledby="setup-heading">
     <h1 id="setup-heading">Create a workspace</h1>
-    <p>Name your workspace to open the dashboard. The Free plan includes read-only access to irrigation records.</p>
+    <p>Name your workspace to open the dashboard. The Free plan includes the AI forecast and read-only access to irrigation records.</p>
     <form id="create-workspace" method="post">
       <label>Workspace name<input name="name" maxlength="100" required autocomplete="organization"></label>
       <p id="create-workspace-error" class="workspace-form-error" role="alert" hidden></p>
@@ -135,10 +135,10 @@
 
       <section id="panel-forecast" class="app-panel" aria-labelledby="forecast-heading" hidden>
         <header class="workspace-panel-head">
-          <div><h2 id="forecast-heading" class="workspace-panel-title" tabindex="-1">AI irrigation forecast</h2><p>Select zones that share a pump and enter their latest field readings for a 24-hour watering plan.</p></div>
-          <a class="rill-link" href="../Technology/#forecast">Try a sample forecast</a>
+          <div><h2 id="forecast-heading" class="workspace-panel-title" tabindex="-1">AI irrigation forecast</h2><p>Build a 24-hour watering plan using your workspace zones or a sample farm.</p></div>
+          <a class="rill-link" href="../Technology/#model">What drives the forecast</a>
         </header>
-        <rill-forecast-planner><p>Enable JavaScript to run the irrigation forecast in your browser.</p></rill-forecast-planner>
+        <rill-forecast-planner hidden><p>Enable JavaScript to run an irrigation forecast.</p></rill-forecast-planner>
         <div class="ai-workbench ai-workbench--compact" data-ai-workbench data-demo-only>
           <header class="ai-workbench-toolbar">
             <h3>Prepared evidence review</h3>

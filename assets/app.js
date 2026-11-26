@@ -133,9 +133,14 @@
   const statuses=['Needs review','Scheduled',config.finalStatus];
   let records=live?context.records:
     Array.isArray(saved)&&saved.length<2000&&saved.every(r=>r&&typeof r.id==='string'&&typeof r.name==='string'&&typeof r.place==='string'&&typeof r.owner==='string'&&typeof r.note==='string'&&Number.isFinite(r.value)&&r.value>=0&&Number.isFinite(r.score)&&r.score>=0&&r.score<=100&&statuses.includes(r.status))?saved:fixture();
-  const forecastPlanner=$('rill-forecast-planner');
+  const forecastPlanner=live?$('rill-forecast-planner'):null;
+  const forecastReady=forecastPlanner&&customElements.whenDefined('rill-forecast-planner').then(()=>{
+   forecastPlanner.requestForecast=(input,signal)=>backend.forecast(workspaceId,input,signal);
+   forecastPlanner.hidden=false;
+   return forecastPlanner;
+  });
   function syncForecastZones() {
-   customElements.whenDefined('rill-forecast-planner').then(()=>{forecastPlanner.workspaceZones=records;});
+   forecastReady?.then(planner=>{planner.workspaceZones=records;});
   }
   let workspaceEvents=context?.events||[];
   const statusTone={'Needs review':'review',Scheduled:'scheduled',[config.finalStatus]:'watered'};

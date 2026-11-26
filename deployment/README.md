@@ -44,19 +44,19 @@ Create a Pages project linked to this GitHub repository. Set its production bran
 | `SUPABASE_URL` | The Supabase project’s HTTPS URL |
 | `SUPABASE_PUBLISHABLE_KEY` | The project key beginning with `sb_publishable_` |
 
-Cloudflare installs dependencies from `package-lock.json`. The build copies the Supabase browser bundle into `dist` and writes only the public project configuration. The `pages.dev` hostname works for the initial deployment. [Cloudflare’s static HTML deployment guide](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/)
+Cloudflare installs dependencies from `package-lock.json` and deploys the forecast function from the repository’s `functions` directory. Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` for both the build and Functions runtime. The forecast endpoint checks the caller’s session and workspace membership through the existing row-level access rules. [Cloudflare Pages Functions bindings](https://developers.cloudflare.com/pages/functions/bindings/)
 
 To build locally, copy [.env.supabase.example](../.env.supabase.example) to `.env.supabase`, set the values and run:
 
 ```sh
 npm ci
 node --env-file=.env.supabase scripts/build-site.mjs
-python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
+npx wrangler pages dev dist --port 4173 --env-file .env.supabase
 ```
 
 Run the workspace permission check in a test project after applying the migrations. It uses temporary test accounts and rolls back its changes. [Permission check](../supabase/tests/workspace.sql)
 
-Log in with a confirmed email account and create a free workspace. Check that the dashboard opens with a plan notice. Assign a paid plan to the test workspace and refresh before adding a zone. Invite another verified account as a viewer and confirm it can read the zone. Test an account in a different workspace to confirm its register is separate. Invites are email-bound and expire after seven days. To remove access, delete that user’s membership in `public.rill_memberships` and any unused invites for that email in `rill_private.rill_invites` through Supabase SQL Editor.
+Log in with a confirmed email account and create a free workspace. Open **AI forecast**, load the sample farm, run the forecast and export its plan. Assign a paid plan to the test workspace and refresh before adding a zone. Invite a verified viewer and confirm that account can read the zone and run forecasts for the workspace. Check that requests without a session receive HTTP 401 and accounts outside the workspace receive HTTP 403. Invites are email-bound and expire after seven days. To remove access, delete that user’s membership in `public.rill_memberships` and any unused invites for that email in `rill_private.rill_invites` through Supabase SQL Editor.
 
 ## Deploy the sample site to Azure Static Web Apps
 
