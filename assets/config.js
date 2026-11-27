@@ -301,12 +301,17 @@ window.BRAND = {
       {
         "name": "Precious Arinze",
         "handle": "Uniqkode",
-        "role": "Project maintainer",
+        "role": "CEO",
         "profile": "https://github.com/Uniqkode",
         "portrait": "maintainer-avatar.jpg",
         "verificationSource": "https://api.github.com/users/Uniqkode",
         "bio": "Maintains the published product source, working review interfaces and implementation documentation for Uniqkode.",
         "linkedin": null
+      },
+      {
+        "name": "Amaka Eneh",
+        "role": "Co-founder and CTO",
+        "verified": true
       }
     ],
     "registrationVerified": false,
