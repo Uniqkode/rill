@@ -20,12 +20,7 @@ if (siteUrl.username || siteUrl.password || siteUrl.search || siteUrl.hash
 }
 if (!siteUrl.pathname.endsWith('/')) siteUrl.pathname += '/';
 
-const sessionPages = new Map([
-  ['index.html', './'],
-  ['home/index.html', '../'],
-  ['login/index.html', '../'],
-  ['dashboard/index.html', '../'],
-]);
+const authMarker = '<!-- rill-live-scripts -->';
 const pageDirs = ['about', 'ai-policy', 'blog', 'contact', 'dashboard', 'data-policy', 'home', 'legal', 'login',
   'market', 'pricing', 'privacy', 'problem', 'product', 'roadmap', 'security', 'solution', 'team', 'Technology', 'terms'];
 const assetTypes = new Set(['.css', '.jpg', '.jpeg', '.png', '.webp', '.svg', '.woff2', '.js', '.json', '.txt']);
@@ -108,14 +103,16 @@ try {
       (_, prefix, name) => `${prefix}${name}?v=${revisions[name]}`);
     if (!demo) {
       html = html.replaceAll('>Sign in to the demo<', '>Open workspace<');
-      const base = sessionPages.get(path);
-      if (base) {
-        if (!html.includes('<!-- rill-live-scripts -->')) throw new Error(`Missing auth script marker in ${path}.`);
-        const tags = scripts.map(script => `<script src="${base}${script}" defer></script>`).join('\n');
-        html = html.replace('data-workspace-mode="demo"', 'data-workspace-mode="live"').replace('<!-- rill-live-scripts -->', tags);
-        html = html.replace(/<!-- rill-demo-login:start -->[\s\S]*?<!-- rill-demo-login:end -->/, '');
-        if (path === 'dashboard/index.html') html = html.replace(/^<script src="\.\.\/assets\/ai-workspace\.js[^\n]*\n/m, '');
+      const base = '../'.repeat(path.split('/').length - 1) || './';
+      const tags = scripts.map(script => `<script src="${base}${script}" defer></script>`).join('\n');
+      if (html.includes('data-workspace-mode="demo"')) {
+        if (!html.includes(authMarker)) throw new Error(`Missing auth script marker in ${path}.`);
+        html = html.replace('data-workspace-mode="demo"', 'data-workspace-mode="live"').replace(authMarker, tags);
+      } else if (html.includes('data-account-link')) {
+        html = html.replace(/<body\b/, '<body data-workspace-mode="live"').replace('</body>', `\n${tags}\n</body>`);
       }
+      if (path === 'login/index.html') html = html.replace(/<!-- rill-demo-login:start -->[\s\S]*?<!-- rill-demo-login:end -->/, '');
+      if (path === 'dashboard/index.html') html = html.replace(/^<script src="\.\.\/assets\/ai-workspace\.js[^\n]*\n/m, '');
     }
     await put(path, html);
   }

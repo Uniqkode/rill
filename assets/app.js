@@ -108,7 +108,6 @@
    download(text,'text/plain;charset=utf-8',config.slug+'-pilot-brief.txt');notify('Pilot brief downloaded.');
   });
  }
- if(page==='home'&&liveMode)window.RILL_WORKSPACE_ENTRY?.home();
  if(page!=='dashboard')return;
  if(liveMode){
   if(window.RILL_WORKSPACE_ENTRY)window.RILL_WORKSPACE_ENTRY.dashboard(startDashboard);

@@ -3,7 +3,7 @@
 
   if (document.body.dataset.workspaceMode !== 'live') return;
   const backend = window.RILL_WORKSPACE;
-  const root = new URL(document.body.dataset.base || './', window.location.href);
+  const root = new URL(document.body.dataset.base || './', document.baseURI);
   const loginUrl = new URL('login/', root);
   const dashboardUrl = new URL('dashboard/', root);
   const inviteKey = 'rill:pending-invite';
@@ -357,14 +357,31 @@
     }
   }
 
-  function home() {
-    const accountLink = $('[data-home-account-link]');
-    if (!accountLink || !backend) return;
+  function watchAccountLinks() {
+    if (!backend) return;
+    const links = Array.from(document.querySelectorAll('[data-account-link]'), link => {
+      const forecast = link.dataset.accountLink === 'forecast';
+      return {
+        link,
+        loginHref: link.href,
+        workspaceHref: forecast ? new URL('#forecast', dashboardUrl).href : dashboardUrl.href,
+        loginLabel: forecast ? 'Log in to forecast' : 'Log in',
+        workspaceLabel: link.textContent,
+        currentPage: link.getAttribute('aria-current'),
+      };
+    });
+    if (!links.length) return;
+
     backend.onSessionChange(signedIn => {
-      accountLink.textContent = signedIn ? 'Workspace' : 'Log in';
-      accountLink.href = signedIn ? dashboardUrl.href : loginUrl.href;
+      for (const { link, loginHref, workspaceHref, loginLabel, workspaceLabel, currentPage } of links) {
+        link.textContent = signedIn ? workspaceLabel : loginLabel;
+        link.href = signedIn ? workspaceHref : loginHref;
+        if (signedIn) link.removeAttribute('aria-current');
+        else if (currentPage) link.setAttribute('aria-current', currentPage);
+      }
     });
   }
 
-  window.RILL_WORKSPACE_ENTRY = { home, login, dashboard };
+  watchAccountLinks();
+  window.RILL_WORKSPACE_ENTRY = { login, dashboard };
 })();
