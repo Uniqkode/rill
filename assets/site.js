@@ -64,11 +64,12 @@
     const directory = select('[data-team-directory]');
     if (directory) {
       for (const member of company.team?.slice(1) ?? []) {
-        if (member.verified !== true || !member.name || !member.role || !member.bio) continue;
+        if (member.verified !== true || !member.name || !member.role) continue;
         const card = document.createElement('article');
         card.className = 'rill-card rill-profile';
         const details = document.createElement('div');
         for (const [tag, value] of [['h3', member.name], ['p', member.role], ['p', member.bio]]) {
+          if (!value) continue;
           const element = document.createElement(tag);
           element.textContent = value;
           details.append(element);

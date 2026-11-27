@@ -8,7 +8,7 @@ The standalone website reads its public company settings from `window.BRAND.comp
 | `contactEmail`, `contactVerified` | Set a monitored business inbox and set `contactVerified` to `true`. Contact opens a draft in the visitor’s email app. |
 | `legalName`, `rcNumber`, `headquarters`, `registrationEvidence`, `registrationVerified` | Provide the registered operating name, registration number without the `RC` prefix, headquarters city and a verification reference. Set `registrationVerified` to `true` once checked. The website publishes the identity, number and city. |
 | `team[0].linkedin` | Provide the maintainer’s actual public LinkedIn profile URL. The website uses the GitHub profile until a LinkedIn profile is configured. |
-| `team` | Add verified teammates with `name`, `role`, `bio`, optional `linkedin` and `verified: true`. About and the homepage display verified additional entries. |
+| `team` | Add verified teammates with `name`, `role` and `verified: true`. The `bio` and `linkedin` fields are optional. About and the homepage display verified additional entries. |
 | `usage` | Provide an object with `verified: true`, `periodStart` and `periodEnd` as ISO calendar dates, `activeOrganizations` and `forecasts` as positive whole counts, and `sourceUrl` as a public HTTPS usage report. The recorded period and figures appear on the homepage. |
 
 Keep any Azure credential or service access token in the backend environment. The public company configuration is readable by visitors. Publish telemetry aggregates and evidence links approved for public viewing.
